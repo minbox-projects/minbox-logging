@@ -51,10 +51,15 @@ public class LoggingNoticeListener implements SmartApplicationListener {
      * format console log json
      */
     private boolean formatConsoleLogJson;
+    /**
+     * show console log
+     */
+    private boolean showConsoleLog;
 
-    public LoggingNoticeListener(LoggingStorageNotice loggingStorageNotice, boolean formatConsoleLogJson) {
+    public LoggingNoticeListener(LoggingStorageNotice loggingStorageNotice, boolean formatConsoleLogJson, boolean showConsoleLog) {
         this.loggingStorageNotice = loggingStorageNotice;
         this.formatConsoleLogJson = formatConsoleLogJson;
+        this.showConsoleLog = showConsoleLog;
     }
 
     @Override
@@ -67,8 +72,9 @@ public class LoggingNoticeListener implements SmartApplicationListener {
     public void onApplicationEvent(ApplicationEvent event) {
         LoggingNoticeEvent loggingNoticeEvent = (LoggingNoticeEvent) event;
         MinBoxLog minBoxLog = loggingNoticeEvent.getLog();
-
-        logger.debug("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
+        if (showConsoleLog) {
+            logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
+        }
 
         // notice logging object instance
         loggingStorageNotice.notice(minBoxLog);
