@@ -2,11 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <parent>
+        <groupId>org.minbox.framework</groupId>
+        <version>0.1.0.RELEASE</version>
+        <artifactId>oss-parent</artifactId>
+        <relativePath>../oss-parent</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.minbox.framework</groupId>
     <artifactId>minbox-logging</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>minbox-logging-client</module>
+        <module>minbox-logging-admin</module>
+        <module>minbox-logging-admin-ui</module>
+        <module>minbox-logging-core</module>
+    </modules>
     <properties>
         <minbox.version>1.0.0-SNAPSHOT</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
@@ -15,8 +27,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
     <description>
-        分布式链路日志组件
-        本项目所属"minbox-projects"开源组织
+        "minbox-projects"开源组织下的分布式链路日志组件
     </description>
     <organization>
         <name>minbox-projects</name>
@@ -33,6 +44,30 @@
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.minbox.framework</groupId>
+            <artifactId>minbox-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -56,7 +91,7 @@
             </snapshots>
         </repository>
         <repository>
-            <id>central</id>
+            <id>Central</id>
             <name>Maven Repository Switchboard</name>
             <url>https://maven.aliyun.com/repository/public</url>
             <releases>
