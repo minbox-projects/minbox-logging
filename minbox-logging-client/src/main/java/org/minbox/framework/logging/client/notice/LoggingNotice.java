@@ -15,27 +15,27 @@
  *
  */
 
-package org.minbox.framework.logging.client.notice.away;
+package org.minbox.framework.logging.client.notice;
 
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
+import org.springframework.core.Ordered;
 
 /**
- * ApiBoot Logging Notice Interface
+ * ApiBoot Logging Local Notice
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-16 15:14
+ * DateTime：2019-07-16 15:32
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
- * @see ApiBootLogStorageNotice
  */
-public interface ApiBootLogStorageNotice {
+public interface LoggingNotice extends Ordered {
     /**
-     * Notice ApiBoot Log Object Instance For Every Request
+     * Local Notice ApiBoot Log Instance
      *
-     * @param apiBootLog ApiBoot Log
+     * @param minBoxLog ApiBoot Log
      */
-    void notice(ApiBootLog apiBootLog);
+    void notice(MinBoxLog minBoxLog);
 }

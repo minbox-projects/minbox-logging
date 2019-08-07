@@ -18,8 +18,8 @@
 package org.minbox.framework.logging.client.notice;
 
 import com.alibaba.fastjson.JSON;
-import org.minbox.framework.logging.client.notice.away.ApiBootLogStorageNotice;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.client.notice.away.LoggingStorageNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,40 +38,40 @@ import org.springframework.scheduling.annotation.Async;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingNoticeListener implements SmartApplicationListener {
+public class LoggingNoticeListener implements SmartApplicationListener {
     /**
      * logger instance
      */
-    static Logger logger = LoggerFactory.getLogger(ApiBootLoggingNoticeListener.class);
+    static Logger logger = LoggerFactory.getLogger(LoggingNoticeListener.class);
     /**
      * ApiBoot Log Storage Notice
      */
-    private ApiBootLogStorageNotice apiBootLogStorageNotice;
+    private LoggingStorageNotice loggingStorageNotice;
     /**
      * format console log json
      */
     private boolean formatConsoleLogJson;
 
-    public ApiBootLoggingNoticeListener(ApiBootLogStorageNotice apiBootLogStorageNotice, boolean formatConsoleLogJson) {
-        this.apiBootLogStorageNotice = apiBootLogStorageNotice;
+    public LoggingNoticeListener(LoggingStorageNotice loggingStorageNotice, boolean formatConsoleLogJson) {
+        this.loggingStorageNotice = loggingStorageNotice;
         this.formatConsoleLogJson = formatConsoleLogJson;
     }
 
     @Override
     public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
-        return eventType == ApiBootLoggingNoticeEvent.class;
+        return eventType == LoggingNoticeEvent.class;
     }
 
     @Override
     @Async
     public void onApplicationEvent(ApplicationEvent event) {
-        ApiBootLoggingNoticeEvent apiBootLoggingNoticeEvent = (ApiBootLoggingNoticeEvent) event;
-        ApiBootLog apiBootLog = apiBootLoggingNoticeEvent.getLog();
+        LoggingNoticeEvent loggingNoticeEvent = (LoggingNoticeEvent) event;
+        MinBoxLog minBoxLog = loggingNoticeEvent.getLog();
 
-        logger.debug("Request Uri：{}， Logging：\n{}", apiBootLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(apiBootLog) : JSON.toJSONString(apiBootLog));
+        logger.debug("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
 
         // notice logging object instance
-        apiBootLogStorageNotice.notice(apiBootLog);
+        loggingStorageNotice.notice(minBoxLog);
     }
 
     @Override

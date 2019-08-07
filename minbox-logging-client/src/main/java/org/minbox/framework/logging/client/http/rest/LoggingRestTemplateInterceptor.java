@@ -17,9 +17,9 @@
 
 package org.minbox.framework.logging.client.http.rest;
 
-import org.minbox.framework.logging.client.ApiBootLogConstant;
-import org.minbox.framework.logging.client.ApiBootLogThreadLocal;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.client.LoggingConstant;
+import org.minbox.framework.logging.client.LogThreadLocal;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
@@ -43,11 +43,11 @@ import java.io.IOException;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
+public class LoggingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
     /**
      * logger instance
      */
-    static Logger logger = LoggerFactory.getLogger(ApiBootLoggingRestTemplateInterceptor.class);
+    static Logger logger = LoggerFactory.getLogger(LoggingRestTemplateInterceptor.class);
 
     /**
      * Request Exception
@@ -60,10 +60,10 @@ public class ApiBootLoggingRestTemplateInterceptor implements ClientHttpRequestI
      */
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        ApiBootLog log = ApiBootLogThreadLocal.get();
+        MinBoxLog log = LogThreadLocal.get();
         if (!ObjectUtils.isEmpty(log)) {
-            request.getHeaders().add(ApiBootLogConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
-            request.getHeaders().add(ApiBootLogConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
+            request.getHeaders().add(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
+            request.getHeaders().add(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
             logger.debug("Setting ApiBoot Logging TraceId：{}，SpanId：{} With RestTemplate.", log.getTraceId(), log.getSpanId());
         }
         return execution.execute(request, body);

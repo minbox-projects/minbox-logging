@@ -34,7 +34,7 @@ import java.util.Map;
  * GitHub：https://github.com/hengboy
  */
 @Data
-public class ApiBootLog implements Serializable {
+public class MinBoxLog implements Serializable {
     /**
      * trace id
      */

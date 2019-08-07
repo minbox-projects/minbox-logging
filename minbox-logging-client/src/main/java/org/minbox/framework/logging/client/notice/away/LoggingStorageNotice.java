@@ -15,45 +15,27 @@
  *
  */
 
-package org.minbox.framework.logging.core;
+package org.minbox.framework.logging.client.notice.away;
 
-import lombok.Data;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 /**
- * ApiBoot Logging Client Notice Object
+ * ApiBoot Logging Notice Interface
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-19 15:05
+ * DateTime：2019-07-16 15:14
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
+ * @see LoggingStorageNotice
  */
-@Data
-public class ApiBootLogClientNotice implements Serializable {
+public interface LoggingStorageNotice {
     /**
-     * Client Service Id
+     * Notice ApiBoot Log Object Instance For Every Request
+     *
+     * @param minBoxLog ApiBoot Log
      */
-    private String clientServiceId;
-    /**
-     * Client Service Ip Address
-     */
-    private String clientServiceIp;
-    /**
-     * Client Service Port
-     */
-    private Integer clientServicePort;
-    /**
-     * Report Time Millis
-     */
-    private Long reportTimeMillis = System.currentTimeMillis();
-    /**
-     * ApiBoot Logging Request Log
-     */
-    private List<ApiBootLog> loggers = new ArrayList<>();
+    void notice(MinBoxLog minBoxLog);
 }

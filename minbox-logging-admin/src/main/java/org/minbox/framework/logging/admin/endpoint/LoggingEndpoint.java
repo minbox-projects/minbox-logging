@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.admin.endpoint;
 
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
-import org.minbox.framework.logging.core.ApiBootLogClientNotice;
+import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.minbox.framework.logging.core.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class LoggingEndpoint {
      */
     @PostMapping(value = "/logging/report")
     @ResponseBody
-    public ResponseEntity<ReportResponse> report(@RequestBody ApiBootLogClientNotice notice) {
+    public ResponseEntity<ReportResponse> report(@RequestBody LoggingClientNotice notice) {
         // is report success
         boolean reportSuccess = true;
         try {

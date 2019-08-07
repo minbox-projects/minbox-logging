@@ -15,33 +15,40 @@
  *
  */
 
-package org.minbox.framework.logging.client.notice;
+package org.minbox.framework.logging.client.notice.away.support;
 
-import lombok.Getter;
-import org.minbox.framework.logging.core.ApiBootLog;
-import org.springframework.context.ApplicationEvent;
+import org.minbox.framework.logging.client.notice.LoggingNotice;
+import org.minbox.framework.logging.client.notice.away.LoggingStorageNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 /**
- * ApiBoot Logging Notice Event
- * Log objects can be obtained by listening for this event
+ * ApiBoot Logging Notice Local Support
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-16 15:04
+ * DateTime：2019-07-16 15:18
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-@Getter
-public class ApiBootLoggingNoticeEvent extends ApplicationEvent {
+public class LoggingLocalStorageNotice implements LoggingStorageNotice {
     /**
-     * ApiBoot Logging Object
+     * ApiBoot Logging Local Notice
      */
-    private ApiBootLog log;
+    private List<LoggingNotice> loggingNotices;
 
-    public ApiBootLoggingNoticeEvent(Object source, ApiBootLog log) {
-        super(source);
-        this.log = log;
+    public LoggingLocalStorageNotice(List<LoggingNotice> loggingNotice) {
+        this.loggingNotices = loggingNotice;
+    }
+
+    @Override
+    public void notice(MinBoxLog minBoxLog) {
+        if (!ObjectUtils.isEmpty(loggingNotices)) {
+            loggingNotices.stream().forEach(loggingNotice -> loggingNotice.notice(minBoxLog));
+        }
     }
 }

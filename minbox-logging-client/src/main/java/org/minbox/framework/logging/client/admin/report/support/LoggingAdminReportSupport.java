@@ -22,8 +22,8 @@ import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.client.admin.discovery.LoggingAdminDiscovery;
 import org.minbox.framework.logging.client.admin.report.LoggingAdminReport;
 import org.minbox.framework.logging.client.cache.LoggingCache;
-import org.minbox.framework.logging.core.ApiBootLog;
-import org.minbox.framework.logging.core.ApiBootLogClientNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.minbox.framework.logging.core.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,7 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      */
     @Override
     public void report() throws MinBoxLoggingException {
-        List<ApiBootLog> logs = null;
+        List<MinBoxLog> logs = null;
         try {
             // get log from cache
             logs = loggingCache.getLogs(numberOfRequestLog);
@@ -143,14 +143,14 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      * @throws MinBoxLoggingException Logging Exception
      */
     @Override
-    public void report(List<ApiBootLog> logs) throws MinBoxLoggingException {
+    public void report(List<MinBoxLog> logs) throws MinBoxLoggingException {
         if (ObjectUtils.isEmpty(logs)) {
             return;
         }
         // ApiBoot Logging Admin Server Url
         String adminServiceUrl = getAfterFormatAdminUrl();
         // client notice entity
-        ApiBootLogClientNotice clientNotice = new ApiBootLogClientNotice();
+        LoggingClientNotice clientNotice = new LoggingClientNotice();
         clientNotice.getLoggers().addAll(logs);
         clientNotice.setClientServiceId(serviceId);
         clientNotice.setClientServiceIp(serviceAddress);
@@ -200,7 +200,7 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
     @Override
     public void destroy() throws Exception {
         // get all cache logs
-        List<ApiBootLog> logs = loggingCache.getAll();
+        List<MinBoxLog> logs = loggingCache.getAll();
         // report to admin
         report(logs);
     }

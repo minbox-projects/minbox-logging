@@ -19,7 +19,7 @@ package org.minbox.framework.logging.client.cache.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.client.cache.LoggingCache;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -42,45 +42,45 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LoggingMemoryCache implements LoggingCache {
     /**
-     * Cache ApiBootLog Map
+     * Cache MinBoxLog Map
      * For Batch Report
      */
-    private static final ConcurrentMap<String, ApiBootLog> CACHE_LOGS = new ConcurrentHashMap();
+    private static final ConcurrentMap<String, MinBoxLog> CACHE_LOGS = new ConcurrentHashMap();
 
     /**
-     * Cache Single ApiBootLog
+     * Cache Single MinBoxLog
      *
-     * @param log ApiBootLog
+     * @param log MinBoxLog
      * @throws org.minbox.framework.logging.client.MinBoxLoggingException Logging Exception
      */
     @Override
-    public void cache(ApiBootLog log) throws MinBoxLoggingException {
+    public void cache(MinBoxLog log) throws MinBoxLoggingException {
         if (!ObjectUtils.isEmpty(log)) {
             CACHE_LOGS.put(UUID.randomUUID().toString(), log);
         }
     }
 
     /**
-     * Get Any One ApiBootLog
+     * Get Any One MinBoxLog
      *
-     * @return ApiBootLog
+     * @return MinBoxLog
      * @throws MinBoxLoggingException Logging Exception
      */
     @Override
-    public ApiBootLog getAnyOne() throws MinBoxLoggingException {
-        List<ApiBootLog> logs = get(0);
+    public MinBoxLog getAnyOne() throws MinBoxLoggingException {
+        List<MinBoxLog> logs = get(0);
         return logs.size() > 0 ? logs.get(0) : null;
     }
 
     /**
-     * Gets the specified number of ApiBootLog
+     * Gets the specified number of MinBoxLog
      *
      * @param count get count number
-     * @return ApiBootLog Collection
+     * @return MinBoxLog Collection
      * @throws MinBoxLoggingException Logging Exception
      */
     @Override
-    public List<ApiBootLog> getLogs(int count) throws MinBoxLoggingException {
+    public List<MinBoxLog> getLogs(int count) throws MinBoxLoggingException {
         if (CACHE_LOGS.size() >= count) {
             return get(count);
         }
@@ -88,13 +88,13 @@ public class LoggingMemoryCache implements LoggingCache {
     }
 
     /**
-     * Gets All Of ApiBootLog
+     * Gets All Of MinBoxLog
      *
-     * @return ApiBootLog Collection
+     * @return MinBoxLog Collection
      * @throws MinBoxLoggingException Logging Exception
      */
     @Override
-    public List<ApiBootLog> getAll() throws MinBoxLoggingException {
+    public List<MinBoxLog> getAll() throws MinBoxLoggingException {
         return get(null);
     }
 
@@ -102,11 +102,11 @@ public class LoggingMemoryCache implements LoggingCache {
      * Get ApiBootLogs
      *
      * @param count get count number
-     * @return ApiBootLog Collection
+     * @return MinBoxLog Collection
      * @throws MinBoxLoggingException Logging Exception
      */
-    private List<ApiBootLog> get(Integer count) throws MinBoxLoggingException {
-        List<ApiBootLog> logs = new ArrayList();
+    private List<MinBoxLog> get(Integer count) throws MinBoxLoggingException {
+        List<MinBoxLog> logs = new ArrayList();
         Iterator<String> iterator = CACHE_LOGS.keySet().iterator();
         int index = 0;
         while (iterator.hasNext()) {

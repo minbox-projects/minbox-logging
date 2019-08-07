@@ -19,9 +19,9 @@ package org.minbox.framework.logging.admin.ui;
 
 import lombok.Builder;
 import lombok.Data;
-import org.minbox.framework.api.boot.plugin.logging.admin.endpoint.Endpoint;
-import org.minbox.framework.api.boot.plugin.logging.admin.storage.LoggingStorage;
-import org.minbox.framework.api.boot.plugin.logging.admin.ui.response.LoggingResponse;
+import org.minbox.framework.logging.admin.endpoint.Endpoint;
+import org.minbox.framework.logging.admin.storage.LoggingStorage;
+import org.minbox.framework.logging.admin.ui.response.LoggingResponse;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;

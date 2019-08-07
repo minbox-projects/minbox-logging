@@ -19,8 +19,8 @@ package org.minbox.framework.logging.client.notice.away.support;
 
 import org.minbox.framework.logging.client.admin.report.LoggingAdminReport;
 import org.minbox.framework.logging.client.cache.LoggingCache;
-import org.minbox.framework.logging.client.notice.away.ApiBootLogStorageNotice;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.client.notice.away.LoggingStorageNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.ReportAway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +39,11 @@ import java.util.Arrays;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingAdminStorageNotice implements ApiBootLogStorageNotice {
+public class LoggingAdminStorageNotice implements LoggingStorageNotice {
     /**
      * logger instance
      */
-    static Logger logger = LoggerFactory.getLogger(ApiBootLoggingAdminStorageNotice.class);
+    static Logger logger = LoggerFactory.getLogger(LoggingAdminStorageNotice.class);
     /**
      * Logging Cache
      */
@@ -58,7 +58,7 @@ public class ApiBootLoggingAdminStorageNotice implements ApiBootLogStorageNotice
      */
     private LoggingAdminReport loggingAdminReport;
 
-    public ApiBootLoggingAdminStorageNotice(LoggingCache loggingCache, ReportAway reportAway, LoggingAdminReport loggingAdminReport) {
+    public LoggingAdminStorageNotice(LoggingCache loggingCache, ReportAway reportAway, LoggingAdminReport loggingAdminReport) {
         this.loggingCache = loggingCache;
         this.reportAway = reportAway;
         this.loggingAdminReport = loggingAdminReport;
@@ -67,16 +67,16 @@ public class ApiBootLoggingAdminStorageNotice implements ApiBootLogStorageNotice
     /**
      * Cache Request Log
      *
-     * @param apiBootLog ApiBoot Log
+     * @param minBoxLog ApiBoot Log
      */
     @Override
-    public void notice(ApiBootLog apiBootLog) {
-        loggingCache.cache(apiBootLog);
+    public void notice(MinBoxLog minBoxLog) {
+        loggingCache.cache(minBoxLog);
         logger.debug("Cache Request Logging Complete.");
         // if just report away，execute report logs to admin
         switch (reportAway) {
             case just:
-                loggingAdminReport.report(Arrays.asList(apiBootLog));
+                loggingAdminReport.report(Arrays.asList(minBoxLog));
                 break;
         }
     }

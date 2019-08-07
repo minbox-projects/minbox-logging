@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.admin.storage;
 
 import com.alibaba.fastjson.JSON;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +70,11 @@ public class LoggingDataSourceStorage implements LoggingStorage {
      * Insert Request Log
      *
      * @param serviceDetailId ServiceDetail ID
-     * @param log             ApiBootLog
+     * @param log             MinBoxLog
      * @throws SQLException SqlException
      */
     @Override
-    public void insertLog(String serviceDetailId, ApiBootLog log) throws SQLException {
+    public void insertLog(String serviceDetailId, MinBoxLog log) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(SQL_INSERT_LOG);
         ps.setString(1, UUID.randomUUID().toString());

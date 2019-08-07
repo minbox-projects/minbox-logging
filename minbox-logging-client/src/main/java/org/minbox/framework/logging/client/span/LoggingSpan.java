@@ -15,33 +15,29 @@
  *
  */
 
-package org.minbox.framework.logging.admin.event;
+package org.minbox.framework.logging.client.span;
 
-import lombok.Getter;
-import org.minbox.framework.logging.core.LoggingClientNotice;
-import org.springframework.context.ApplicationEvent;
+
+import org.minbox.framework.logging.client.MinBoxLoggingException;
 
 /**
- * The time of publication after receiving the reported log information
+ * ApiBoot Logging Span
+ * Create new spanId
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-22 15:08
+ * DateTime：2019-07-10 17:02
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
- * @see org.minbox.framework.logging.admin.endpoint.LoggingEndpoint
  */
-@Getter
-public class ReportLogEvent extends ApplicationEvent {
+public interface LoggingSpan {
     /**
-     * ApiBoot Log Client Report Notice Object
+     * create new spanId
+     *
+     * @return span id
+     * @throws MinBoxLoggingException exception
      */
-    private LoggingClientNotice logClientNotice;
-
-    public ReportLogEvent(Object source, LoggingClientNotice logClientNotice) {
-        super(source);
-        this.logClientNotice = logClientNotice;
-    }
+    String createSpanId() throws MinBoxLoggingException;
 }

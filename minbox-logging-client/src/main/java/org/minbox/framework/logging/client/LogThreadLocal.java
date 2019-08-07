@@ -17,24 +17,47 @@
 
 package org.minbox.framework.logging.client;
 
+import org.minbox.framework.logging.core.MinBoxLog;
+
 /**
- * ApiBoot Log Constant
+ * Using threadLocal to store log objects in multithreaded situations
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-16 14:55
+ * DateTime：2019-07-15 16:41
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public interface ApiBootLogConstant {
+public class LogThreadLocal {
     /**
-     * ApiBoot TraceId Header Name
+     * ApiBoot Log Thread Local
      */
-    String HEADER_NAME_TRACE_ID = "API-BOOT-X-TRACE-ID";
+    private static final ThreadLocal<MinBoxLog> MINBOX_LOGGING_THREAD_LOCAL = new ThreadLocal();
+
     /**
-     * ApiBoot Parent SpanId Header Name
+     * Get This Thread ApiBoot Log Object Instance
+     *
+     * @return This Thread ApiBoot Log
      */
-    String HEADER_NAME_PARENT_SPAN_ID = "API-BOOT-X-PARENT-SPAN-ID";
+    public static MinBoxLog get() {
+        return MINBOX_LOGGING_THREAD_LOCAL.get();
+    }
+
+    /**
+     * Set This Thread ApiBoot Log Object Instance
+     *
+     * @param minBoxLog This Thread ApiBoot Log
+     */
+    public static void set(MinBoxLog minBoxLog) {
+        MINBOX_LOGGING_THREAD_LOCAL.set(minBoxLog);
+    }
+
+    /**
+     * Remove This Thread ApiBoot Log Object Instance
+     */
+    public static void remove() {
+        MINBOX_LOGGING_THREAD_LOCAL.remove();
+    }
 }

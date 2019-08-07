@@ -31,7 +31,7 @@ import org.minbox.framework.logging.client.MinBoxLoggingException;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public interface ApiBootLoggingTracer {
+public interface LoggingTracer {
     /**
      * create new traceId
      *

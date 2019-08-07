@@ -136,13 +136,6 @@
                 this.listOffset = 0;
             },
             filterlogs(logs) {
-                /*if (this.filter.application) {
-                    const instances = this.getInstances(this.filter.application);
-                    return logs.filter(e => instances.includes(e.instance))
-                }
-                if (this.filter.instanceId) {
-                    return logs.filter(e => e.instance === this.filter.instanceId);
-                }*/
                 return logs;
             },
             createSubscription() {

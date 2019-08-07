@@ -36,7 +36,7 @@ import java.io.IOException;
  * GitHub：https://github.com/hengboy
  */
 @WebFilter(urlPatterns = "/*", filterName = "apiBootLoggingFilter")
-public class ApiBootLoggingBodyFilter implements Filter {
+public class LoggingBodyFilter implements Filter {
     /**
      * Wrapper Body
      * replace http request body instance

@@ -19,7 +19,7 @@ package org.minbox.framework.logging.client.span.support;
 
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.client.span.ApiBootLoggingSpan;
+import org.minbox.framework.logging.client.span.LoggingSpan;
 
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ import java.util.UUID;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingDefaultSpan implements ApiBootLoggingSpan {
+public class LoggingDefaultSpan implements LoggingSpan {
     /**
      * Create New SpanId
      *

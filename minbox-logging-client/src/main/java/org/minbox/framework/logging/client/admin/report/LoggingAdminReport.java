@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.client.admin.report;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
@@ -49,5 +49,5 @@ public interface LoggingAdminReport extends InitializingBean {
      * @param logs Request Logs
      * @throws MinBoxLoggingException Logging Exception
      */
-    void report(List<ApiBootLog> logs) throws MinBoxLoggingException;
+    void report(List<MinBoxLog> logs) throws MinBoxLoggingException;
 }

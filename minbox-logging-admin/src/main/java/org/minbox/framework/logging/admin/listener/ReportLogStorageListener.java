@@ -20,8 +20,8 @@ package org.minbox.framework.logging.admin.listener;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.admin.storage.LoggingStorage;
-import org.minbox.framework.logging.core.ApiBootLog;
-import org.minbox.framework.logging.core.ApiBootLogClientNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -71,7 +71,7 @@ public class ReportLogStorageListener implements SmartApplicationListener {
         try {
             logger.debug("Starting Storage Report Request Logs.");
             ReportLogEvent reportLogEvent = (ReportLogEvent) event;
-            ApiBootLogClientNotice notice = reportLogEvent.getLogClientNotice();
+            LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
             String serviceDetail = formatServiceDetailID(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
             String serviceDetailId = SERVICE_DETAIL_IDS.get(serviceDetail);
 
@@ -91,7 +91,7 @@ public class ReportLogStorageListener implements SmartApplicationListener {
 
             // save logs
             if (!ObjectUtils.isEmpty(notice.getLoggers())) {
-                for (ApiBootLog log : notice.getLoggers()) {
+                for (MinBoxLog log : notice.getLoggers()) {
                     loggingStorage.insertLog(serviceDetailId, log);
                 }
             }

@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.client.cache;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 import java.util.List;
 
@@ -35,35 +35,35 @@ import java.util.List;
  */
 public interface LoggingCache {
     /**
-     * Cache Single ApiBootLog
+     * Cache Single MinBoxLog
      *
-     * @param log ApiBootLog
+     * @param log MinBoxLog
      * @throws MinBoxLoggingException Logging Exception
      */
-    void cache(ApiBootLog log) throws MinBoxLoggingException;
+    void cache(MinBoxLog log) throws MinBoxLoggingException;
 
     /**
-     * Get Any One ApiBootLog
+     * Get Any One MinBoxLog
      *
-     * @return ApiBootLog
+     * @return MinBoxLog
      * @throws MinBoxLoggingException Logging Exception
      */
-    ApiBootLog getAnyOne() throws MinBoxLoggingException;
+    MinBoxLog getAnyOne() throws MinBoxLoggingException;
 
     /**
-     * Gets the specified number of ApiBootLog
+     * Gets the specified number of MinBoxLog
      *
      * @param count get count number
-     * @return ApiBootLog Collection
+     * @return MinBoxLog Collection
      * @throws MinBoxLoggingException Logging Exception
      */
-    List<ApiBootLog> getLogs(int count) throws MinBoxLoggingException;
+    List<MinBoxLog> getLogs(int count) throws MinBoxLoggingException;
 
     /**
-     * Gets All Of ApiBootLog
+     * Gets All Of MinBoxLog
      *
-     * @return ApiBootLog Collection
+     * @return MinBoxLog Collection
      * @throws MinBoxLoggingException Logging Exception
      */
-    List<ApiBootLog> getAll() throws MinBoxLoggingException;
+    List<MinBoxLog> getAll() throws MinBoxLoggingException;
 }

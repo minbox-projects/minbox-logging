@@ -18,12 +18,12 @@
 package org.minbox.framework.logging.client.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import org.minbox.framework.logging.client.ApiBootLogConstant;
-import org.minbox.framework.logging.client.ApiBootLogThreadLocal;
-import org.minbox.framework.logging.client.notice.ApiBootLoggingNoticeEvent;
-import org.minbox.framework.logging.client.span.ApiBootLoggingSpan;
-import org.minbox.framework.logging.client.tracer.ApiBootLoggingTracer;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.client.LoggingConstant;
+import org.minbox.framework.logging.client.LogThreadLocal;
+import org.minbox.framework.logging.client.notice.LoggingNoticeEvent;
+import org.minbox.framework.logging.client.span.LoggingSpan;
+import org.minbox.framework.logging.client.tracer.LoggingTracer;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.util.StackTraceUtil;
 import org.minbox.framework.web.util.HttpRequestUtil;
 import org.slf4j.Logger;
@@ -55,11 +55,11 @@ import java.util.List;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingInterceptor implements HandlerInterceptor {
+public class LoggingInterceptor implements HandlerInterceptor {
     /**
      * logger instance
      */
-    static Logger logger = LoggerFactory.getLogger(ApiBootLoggingInterceptor.class);
+    static Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
     /**
      * default ignore uris
      */
@@ -68,17 +68,17 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
     }};
 
     private ConfigurableEnvironment environment;
-    private ApiBootLoggingTracer apiBootLoggingTracer;
-    private ApiBootLoggingSpan apiBootLoggingSpan;
+    private LoggingTracer loggingTracer;
+    private LoggingSpan loggingSpan;
     private String[] ignorePaths;
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    public ApiBootLoggingInterceptor(ConfigurableEnvironment environment, ApiBootLoggingTracer apiBootLoggingTracer, ApiBootLoggingSpan apiBootLoggingSpan, String[] ignorePaths) {
+    public LoggingInterceptor(ConfigurableEnvironment environment, LoggingTracer loggingTracer, LoggingSpan loggingSpan, String[] ignorePaths) {
         this.environment = environment;
-        this.apiBootLoggingTracer = apiBootLoggingTracer;
-        this.apiBootLoggingSpan = apiBootLoggingSpan;
+        this.loggingTracer = loggingTracer;
+        this.loggingSpan = loggingSpan;
         this.ignorePaths = ignorePaths;
     }
 
@@ -86,7 +86,7 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
      * Execution before controller method
      * If "traceId" is directly used in the request header information, otherwise a new one is created
      * If the request header information contains "spanId", bind the parent-subordinate relationship
-     * Extract request IP, request parameters, request uri and set it to ApiBootLog
+     * Extract request IP, request parameters, request uri and set it to MinBoxLog
      *
      * @param request  http request
      * @param response http response
@@ -100,7 +100,7 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
         if (checkIgnore(HttpRequestUtil.getUri(request))) {
             return true;
         }
-        ApiBootLog log = new ApiBootLog();
+        MinBoxLog log = new MinBoxLog();
         try {
             log.setRequestIp(HttpRequestUtil.getIp(request));
             log.setRequestUri(HttpRequestUtil.getUri(request));
@@ -128,13 +128,13 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
             log.setParentSpanId(parentSpanId);
 
             // spanId
-            log.setSpanId(apiBootLoggingSpan.createSpanId());
+            log.setSpanId(loggingSpan.createSpanId());
             logger.debug("Request SpanId：{}", log.getSpanId());
         } catch (Exception e) {
             // set exception stack
             log.setExceptionStack(StackTraceUtil.getStackTrace(e));
         } finally {
-            ApiBootLogThreadLocal.set(log);
+            LogThreadLocal.set(log);
         }
         return true;
     }
@@ -152,7 +152,7 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
             // Get Current Thread ApiBoot Log Instance
-            ApiBootLog log = ApiBootLogThreadLocal.get();
+            MinBoxLog log = LogThreadLocal.get();
             if (!ObjectUtils.isEmpty(log)) {
                 // set exception stack
                 if (!ObjectUtils.isEmpty(ex)) {
@@ -166,13 +166,13 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
                 log.setResponseHeaders(HttpRequestUtil.getResponseHeaders(response));
                 log.setResponseBody(HttpRequestUtil.getResponseBody(response));
                 // publish logging event
-                applicationContext.publishEvent(new ApiBootLoggingNoticeEvent(this, log));
+                applicationContext.publishEvent(new LoggingNoticeEvent(this, log));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
             // Remove ApiBoot Log
-            ApiBootLogThreadLocal.remove();
+            LogThreadLocal.remove();
         }
     }
 
@@ -184,12 +184,12 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
      */
     private String getOrCreateTraceId(HttpServletRequest request) {
         // get traceId from request header
-        String traceId = HttpRequestUtil.getHeader(request, ApiBootLogConstant.HEADER_NAME_TRACE_ID);
+        String traceId = HttpRequestUtil.getHeader(request, LoggingConstant.HEADER_NAME_TRACE_ID);
         // if request header don't have traceId
         // create new traceId
         if (ObjectUtils.isEmpty(traceId)) {
             logger.debug("Request Header Don't Have TraceId，Create New TraceId Now.");
-            traceId = apiBootLoggingTracer.createTraceId();
+            traceId = loggingTracer.createTraceId();
         }
         logger.debug("Request TraceId：{}", traceId);
         return traceId;
@@ -203,7 +203,7 @@ public class ApiBootLoggingInterceptor implements HandlerInterceptor {
      */
     private String getParentSpanId(HttpServletRequest request) {
         // get spanId from request header
-        String spanId = HttpRequestUtil.getHeader(request, ApiBootLogConstant.HEADER_NAME_PARENT_SPAN_ID);
+        String spanId = HttpRequestUtil.getHeader(request, LoggingConstant.HEADER_NAME_PARENT_SPAN_ID);
         logger.debug("Request Parent SpanId：{}", spanId);
         return spanId;
     }

@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.admin.storage;
 
 
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 import java.sql.SQLException;
 
@@ -38,10 +38,10 @@ public interface LoggingStorage {
      * Insert ApiBootLogs To DataBase
      *
      * @param serviceDetailId ServiceDetail ID
-     * @param log             ApiBootLog
+     * @param log             MinBoxLog
      * @throws SQLException Sql Exception
      */
-    void insertLog(String serviceDetailId, ApiBootLog log) throws SQLException;
+    void insertLog(String serviceDetailId, MinBoxLog log) throws SQLException;
 
     /**
      * Insert ServiceDetail To DataBase

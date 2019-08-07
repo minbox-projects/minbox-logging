@@ -15,33 +15,33 @@
  *
  */
 
-package org.minbox.framework.logging.client.tracer.support;
+package org.minbox.framework.logging.client.notice;
 
-import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.client.tracer.ApiBootLoggingTracer;
-
-import java.util.UUID;
+import lombok.Getter;
+import org.minbox.framework.logging.core.MinBoxLog;
+import org.springframework.context.ApplicationEvent;
 
 /**
- * ApiBoot Logging Tracer Default Support Instance
+ * ApiBoot Logging Notice Event
+ * Log objects can be obtained by listening for this event
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-10 17:28
+ * DateTime：2019-07-16 15:04
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLoggingDefaultTracer implements ApiBootLoggingTracer {
+@Getter
+public class LoggingNoticeEvent extends ApplicationEvent {
     /**
-     * Use UUID as the default traceId
-     *
-     * @return traceId
-     * @throws MinBoxLoggingException Exception
+     * ApiBoot Logging Object
      */
-    @Override
-    public String createTraceId() throws MinBoxLoggingException {
-        return UUID.randomUUID().toString();
+    private MinBoxLog log;
+
+    public LoggingNoticeEvent(Object source, MinBoxLog log) {
+        super(source);
+        this.log = log;
     }
 }

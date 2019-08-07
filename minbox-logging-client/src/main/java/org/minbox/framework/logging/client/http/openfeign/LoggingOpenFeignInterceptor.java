@@ -19,9 +19,9 @@ package org.minbox.framework.logging.client.http.openfeign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.minbox.framework.logging.client.ApiBootLogConstant;
-import org.minbox.framework.logging.client.ApiBootLogThreadLocal;
-import org.minbox.framework.logging.core.ApiBootLog;
+import org.minbox.framework.logging.client.LoggingConstant;
+import org.minbox.framework.logging.client.LogThreadLocal;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,17 +37,17 @@ import org.slf4j.LoggerFactory;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class ApiBootLogOpenFeignInterceptor implements RequestInterceptor {
+public class LoggingOpenFeignInterceptor implements RequestInterceptor {
     /**
      * logger instance
      */
-    static Logger logger = LoggerFactory.getLogger(ApiBootLogOpenFeignInterceptor.class);
+    static Logger logger = LoggerFactory.getLogger(LoggingOpenFeignInterceptor.class);
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        ApiBootLog log = ApiBootLogThreadLocal.get();
-        requestTemplate.header(ApiBootLogConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
-        requestTemplate.header(ApiBootLogConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
+        MinBoxLog log = LogThreadLocal.get();
+        requestTemplate.header(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
+        requestTemplate.header(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
         logger.debug("Setting ApiBoot Logging TraceId：{}，SpanId：{} With Openfeign.", log.getTraceId(), log.getSpanId());
     }
 }

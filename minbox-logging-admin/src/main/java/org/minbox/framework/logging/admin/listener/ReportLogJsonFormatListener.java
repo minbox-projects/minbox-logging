@@ -20,7 +20,7 @@ package org.minbox.framework.logging.admin.listener;
 import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
-import org.minbox.framework.logging.core.ApiBootLogClientNotice;
+import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.minbox.framework.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class ReportLogJsonFormatListener implements SmartApplicationListener {
         try {
             ReportLogEvent reportLogEvent = (ReportLogEvent) event;
             if (showConsoleReportLog) {
-                ApiBootLogClientNotice notice = reportLogEvent.getLogClientNotice();
+                LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
                 String serviceInfo = String.format("%s -> %s", notice.getClientServiceId(), notice.getClientServiceIp());
                 logger.info("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo, formatConsoleLogJson ? JsonUtil.beautifyJson(notice.getLoggers()) : JSON.toJSONString(notice.getLoggers()));
             }
