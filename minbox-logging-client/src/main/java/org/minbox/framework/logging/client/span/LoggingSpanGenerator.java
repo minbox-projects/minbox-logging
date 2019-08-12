@@ -32,7 +32,7 @@ import org.minbox.framework.logging.client.MinBoxLoggingException;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public interface LoggingSpan {
+public interface LoggingSpanGenerator {
     /**
      * create new spanId
      *
