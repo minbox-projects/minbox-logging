@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.SmartApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -67,6 +68,7 @@ public class ReportLogStorageListener implements SmartApplicationListener {
      * @param event ReportLogEvent
      */
     @Override
+    @Async
     public void onApplicationEvent(ApplicationEvent event) {
         try {
             logger.debug("Starting Storage Report Request Logs.");
