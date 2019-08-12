@@ -18,30 +18,27 @@
 package org.minbox.framework.logging.client.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import org.minbox.framework.logging.client.LoggingConstant;
 import org.minbox.framework.logging.client.LogThreadLocal;
+import org.minbox.framework.logging.client.LoggingConstant;
+import org.minbox.framework.logging.client.LoggingFactoryBean;
 import org.minbox.framework.logging.client.notice.LoggingNoticeEvent;
-import org.minbox.framework.logging.client.span.LoggingSpan;
-import org.minbox.framework.logging.client.tracer.LoggingTracer;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.util.StackTraceUtil;
 import org.minbox.framework.web.util.HttpRequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * ApiBoot Logging SpringBoot Web Interceptor
@@ -55,31 +52,24 @@ import java.util.List;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class LoggingInterceptor implements HandlerInterceptor {
+public class LoggingInterceptor implements HandlerInterceptor, ApplicationContextAware {
     /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
     /**
-     * default ignore uris
+     * logging factory bean
+     * {@link LoggingFactoryBean}
      */
-    static final List<String> DEFAULT_IGNORE_URIS = new ArrayList() {{
-        add("/error");
-    }};
-
-    private ConfigurableEnvironment environment;
-    private LoggingTracer loggingTracer;
-    private LoggingSpan loggingSpan;
-    private String[] ignorePaths;
-
-    @Autowired
+    private LoggingFactoryBean factoryBean;
+    /**
+     * application context
+     * {@link ApplicationContextAware}
+     */
     private ApplicationContext applicationContext;
 
-    public LoggingInterceptor(ConfigurableEnvironment environment, LoggingTracer loggingTracer, LoggingSpan loggingSpan, String[] ignorePaths) {
-        this.environment = environment;
-        this.loggingTracer = loggingTracer;
-        this.loggingSpan = loggingSpan;
-        this.ignorePaths = ignorePaths;
+    public LoggingInterceptor(LoggingFactoryBean factoryBean) {
+        this.factoryBean = factoryBean;
     }
 
     /**
@@ -110,25 +100,15 @@ public class LoggingInterceptor implements HandlerInterceptor {
             log.setRequestHeaders(HttpRequestUtil.getRequestHeaders(request));
             log.setHttpStatus(response.getStatus());
             log.setStartTime(System.currentTimeMillis());
-
-            // service id
-            log.setServiceId(environment.getProperty("spring.application.name"));
-            // service port
-            log.setServicePort(environment.getProperty("local.server.port"));
-            // service ip
+            log.setServiceId(factoryBean.getServiceId());
+            log.setServicePort(String.valueOf(factoryBean.getServicePort()));
             InetAddress inetAddress = InetAddress.getLocalHost();
             log.setServiceIp(inetAddress.getHostAddress());
-
-            // traceId
             String traceId = getOrCreateTraceId(request);
             log.setTraceId(traceId);
-
-            // parent spanId
             String parentSpanId = getParentSpanId(request);
             log.setParentSpanId(parentSpanId);
-
-            // spanId
-            log.setSpanId(loggingSpan.createSpanId());
+            log.setSpanId(factoryBean.getSpanGenerator().createSpanId());
             logger.debug("Request SpanId：{}", log.getSpanId());
         } catch (Exception e) {
             // set exception stack
@@ -189,7 +169,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         // create new traceId
         if (ObjectUtils.isEmpty(traceId)) {
             logger.debug("Request Header Don't Have TraceId，Create New TraceId Now.");
-            traceId = loggingTracer.createTraceId();
+            traceId = factoryBean.getTraceGenerator().createTraceId();
         }
         logger.debug("Request TraceId：{}", traceId);
         return traceId;
@@ -215,11 +195,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
      * @return is have in ignore path list
      */
     private boolean checkIgnore(String uri) {
-        if (!ObjectUtils.isEmpty(ignorePaths)) {
-            DEFAULT_IGNORE_URIS.addAll(Arrays.asList(ignorePaths));
-        }
         // check is matcher ant path
-        for (String ignoreUri : DEFAULT_IGNORE_URIS) {
+        for (String ignoreUri : factoryBean.getIgnorePaths()) {
             AntPathMatcher matcher = new AntPathMatcher();
             boolean isMatcher = matcher.match(ignoreUri, uri);
             if (isMatcher) {
@@ -228,5 +205,11 @@ public class LoggingInterceptor implements HandlerInterceptor {
             }
         }
         return false;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Assert.notNull(applicationContext, "ApplicationContext must not be null");
+        this.applicationContext = applicationContext;
     }
 }
