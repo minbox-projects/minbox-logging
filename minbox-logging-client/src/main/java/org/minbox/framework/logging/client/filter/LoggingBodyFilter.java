@@ -17,6 +17,9 @@
 
 package org.minbox.framework.logging.client.filter;
 
+import org.minbox.framework.web.request.RequestWrapper;
+import org.minbox.framework.web.response.ResponseWrapper;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
