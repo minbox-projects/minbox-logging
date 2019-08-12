@@ -18,7 +18,7 @@
 package org.minbox.framework.logging.client.tracer.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.client.tracer.LoggingTracer;
+import org.minbox.framework.logging.client.tracer.LoggingTraceGenerator;
 
 import java.util.UUID;
 
@@ -33,7 +33,7 @@ import java.util.UUID;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class LoggingDefaultTracer implements LoggingTracer {
+public class LoggingDefaultTraceGenerator implements LoggingTraceGenerator {
     /**
      * Use UUID as the default traceId
      *
