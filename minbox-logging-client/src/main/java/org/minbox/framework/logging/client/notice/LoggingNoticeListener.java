@@ -17,15 +17,22 @@
 
 package org.minbox.framework.logging.client.notice;
 
-import com.alibaba.fastjson.JSON;
-import org.minbox.framework.logging.client.notice.away.LoggingStorageNotice;
 import org.minbox.framework.logging.core.MinBoxLog;
-import org.minbox.framework.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.SmartApplicationListener;
+import org.springframework.core.OrderComparator;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ApiBoot Logging Console Notice Listener
@@ -38,29 +45,15 @@ import org.springframework.scheduling.annotation.Async;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public class LoggingNoticeListener implements SmartApplicationListener {
+public class LoggingNoticeListener implements SmartApplicationListener, ApplicationContextAware {
     /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingNoticeListener.class);
     /**
-     * ApiBoot Log Storage Notice
+     * Application Context Instance
      */
-    private LoggingStorageNotice loggingStorageNotice;
-    /**
-     * format console log json
-     */
-    private boolean formatConsoleLogJson;
-    /**
-     * show console log
-     */
-    private boolean showConsoleLog;
-
-    public LoggingNoticeListener(LoggingStorageNotice loggingStorageNotice, boolean formatConsoleLogJson, boolean showConsoleLog) {
-        this.loggingStorageNotice = loggingStorageNotice;
-        this.formatConsoleLogJson = formatConsoleLogJson;
-        this.showConsoleLog = showConsoleLog;
-    }
+    private ApplicationContext applicationContext;
 
     @Override
     public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
@@ -72,12 +65,21 @@ public class LoggingNoticeListener implements SmartApplicationListener {
     public void onApplicationEvent(ApplicationEvent event) {
         LoggingNoticeEvent loggingNoticeEvent = (LoggingNoticeEvent) event;
         MinBoxLog minBoxLog = loggingNoticeEvent.getLog();
-        if (showConsoleLog) {
-            logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
+        Map<String, LoggingNotice> noticeMap = applicationContext.getBeansOfType(LoggingNotice.class);
+        if (ObjectUtils.isEmpty(noticeMap)) {
+            logger.warn("Don't found LoggingNotice support instance list.");
+            return;
         }
+        List<LoggingNotice> noticeList = new ArrayList<>(noticeMap.values());
+        OrderComparator.sort(noticeList);
+        noticeList.stream().forEach(loggingNotice -> loggingNotice.notice(minBoxLog));
+    }
 
-        // notice logging object instance
-        loggingStorageNotice.notice(minBoxLog);
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Assert.notNull(applicationContext, "ApplicationContext must not be null");
+        this.applicationContext = applicationContext;
+
     }
 
     @Override
