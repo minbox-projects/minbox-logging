@@ -19,7 +19,6 @@ package org.minbox.framework.logging.client.admin.report;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.core.MinBoxLog;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ import java.util.List;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-public interface LoggingAdminReport extends InitializingBean {
+public interface LoggingAdminReport {
     /**
      * Report Request Logs To Admin
      * Loading a specified number of logs from the cache

@@ -18,25 +18,23 @@
 package org.minbox.framework.logging.client.admin.report.support;
 
 import com.alibaba.fastjson.JSON;
+import org.minbox.framework.logging.client.LoggingFactoryBean;
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.client.admin.discovery.LoggingAdminDiscovery;
 import org.minbox.framework.logging.client.admin.report.LoggingAdminReport;
 import org.minbox.framework.logging.client.cache.LoggingCache;
-import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.LoggingClientNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,45 +66,14 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      * Authorization HEADER NAME
      */
     private static final String HEADER_AUTHORIZATION = "Authorization";
-    /**
-     * ApiBoot Logging Admin Discovery
-     */
-    private LoggingAdminDiscovery adminDiscovery;
-    /**
-     * Rest Template
-     */
-    private RestTemplate restTemplate;
-    /**
-     * Logging Cache
-     *
-     * @see org.minbox.framework.logging.client.cache.support.LoggingMemoryCache
-     */
-    private LoggingCache loggingCache;
-    /**
-     * Report Number Of Request Log
-     */
-    private Integer numberOfRequestLog;
-    /**
-     * ServiceId
-     * application name
-     */
-    private String serviceId;
-    /**
-     * Service Address
-     */
-    private String serviceAddress;
-    /**
-     * Service Port
-     */
-    private Integer servicePort;
 
-    public LoggingAdminReportSupport(LoggingAdminDiscovery adminDiscovery, RestTemplate restTemplate, LoggingCache loggingCache, Integer numberOfRequestLog, ConfigurableEnvironment environment) {
-        this.adminDiscovery = adminDiscovery;
-        this.restTemplate = restTemplate;
-        this.loggingCache = loggingCache;
-        this.numberOfRequestLog = numberOfRequestLog;
-        this.serviceId = environment.getProperty("spring.application.name");
-        this.servicePort = Integer.valueOf(environment.getProperty("server.port"));
+    /**
+     * logging factory bean
+     */
+    private LoggingFactoryBean factoryBean;
+
+    public LoggingAdminReportSupport(LoggingFactoryBean factoryBean) {
+        this.factoryBean = factoryBean;
     }
 
     /**
@@ -116,7 +83,9 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      */
     @Override
     public void report() throws MinBoxLoggingException {
-        List<MinBoxLog> logs = null;
+        List<MinBoxLog> logs = new ArrayList<>();
+        LoggingCache loggingCache = factoryBean.getLoggingCache();
+        Integer numberOfRequestLog = factoryBean.getNumberOfRequestLog();
         try {
             // get log from cache
             logs = loggingCache.getLogs(numberOfRequestLog);
@@ -152,19 +121,19 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
         // client notice entity
         LoggingClientNotice clientNotice = new LoggingClientNotice();
         clientNotice.getLoggers().addAll(logs);
-        clientNotice.setClientServiceId(serviceId);
-        clientNotice.setClientServiceIp(serviceAddress);
-        clientNotice.setClientServicePort(servicePort);
+        clientNotice.setClientServiceId(factoryBean.getServiceId());
+        clientNotice.setClientServiceIp(factoryBean.getServiceAddress());
+        clientNotice.setClientServicePort(factoryBean.getServicePort());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
-        String basicAuth = adminDiscovery.getBasicAuth();
+        String basicAuth = factoryBean.getLoggingAdminDiscovery().getBasicAuth();
         if (!ObjectUtils.isEmpty(basicAuth)) {
             headers.add(HEADER_AUTHORIZATION, basicAuth);
         }
         HttpEntity<String> httpEntity = new HttpEntity(JSON.toJSONString(clientNotice), headers);
 
-        ResponseEntity<ReportResponse> response = restTemplate.postForEntity(adminServiceUrl, httpEntity, ReportResponse.class);
+        ResponseEntity<ReportResponse> response = factoryBean.getRestTemplate().postForEntity(adminServiceUrl, httpEntity, ReportResponse.class);
         if (response.getStatusCode().is2xxSuccessful() && response.getBody().getStatus().equals(ReportResponse.SUCCESS)) {
             logger.debug("Report Request Logging Successfully To Admin.");
         } else {
@@ -179,16 +148,9 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      */
     private String getAfterFormatAdminUrl() {
         // api boot admin service uri
-        String adminServiceUri = adminDiscovery.lookup();
+        String adminServiceUri = factoryBean.getLoggingAdminDiscovery().lookup();
         // api boot admin service url
         return String.format("%s%s", adminServiceUri, REPORT_LOG_URI);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // service ip address
-        InetAddress inetAddress = InetAddress.getLocalHost();
-        this.serviceAddress = inetAddress.getHostAddress();
     }
 
     /**
@@ -200,7 +162,7 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
     @Override
     public void destroy() throws Exception {
         // get all cache logs
-        List<MinBoxLog> logs = loggingCache.getAll();
+        List<MinBoxLog> logs = factoryBean.getLoggingCache().getAll();
         // report to admin
         report(logs);
     }

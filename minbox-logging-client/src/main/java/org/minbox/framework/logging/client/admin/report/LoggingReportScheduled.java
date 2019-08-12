@@ -17,6 +17,8 @@
 
 package org.minbox.framework.logging.client.admin.report;
 
+import org.minbox.framework.logging.client.LoggingFactoryBean;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +43,10 @@ public class LoggingReportScheduled {
     /**
      * Scheduled Report
      *
-     * @param loggingAdminReport Logging Admin Report
+     * @param factoryBean logging factory bean
      */
-    public LoggingReportScheduled(LoggingAdminReport loggingAdminReport, int reportInitialDelaySecond, int reportIntervalSecond) {
+    public LoggingReportScheduled(LoggingFactoryBean factoryBean) {
         // scheduled report request logs
-        executorService.scheduleAtFixedRate(() -> loggingAdminReport.report(), reportInitialDelaySecond, reportIntervalSecond, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(() -> factoryBean.getLoggingAdminReport().report(), factoryBean.getReportInitialDelaySecond(), factoryBean.getReportIntervalSecond(), TimeUnit.SECONDS);
     }
 }
