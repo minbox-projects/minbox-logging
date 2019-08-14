@@ -15,27 +15,40 @@
  *
  */
 
-package org.minbox.framework.logging.core;
+package org.minbox.framework.logging.core.response;
 
 import lombok.Data;
+import org.minbox.framework.logging.core.MinBoxLog;
+
+import java.sql.Timestamp;
 
 /**
- * Report Request Log To Admin After Response Entity
+ * Logging Response Api Entity
  *
  * @author：恒宇少年 - 于起宇
  * <p>
- * DateTime：2019-07-19 18:14
+ * DateTime：2019-08-06 16:36
  * Blog：http://blog.yuqiyu.com
  * WebSite：http://www.jianshu.com/u/092df3f77bca
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
 @Data
-public class ReportResponse {
-
-    public static final String SUCCESS = "SUCCESS";
-
-    public static final String ERROR = "ERROR";
-
-    private String status;
+public class LoggingResponse extends MinBoxLog {
+    /**
+     * create time
+     */
+    private Timestamp createTime;
+    /**
+     * request header
+     */
+    private String requestHeader;
+    /**
+     * response header
+     */
+    private String responseHeader;
+    /**
+     * service Id
+     */
+    private String serviceId;
 }

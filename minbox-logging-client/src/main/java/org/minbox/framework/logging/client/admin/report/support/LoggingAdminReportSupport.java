@@ -24,7 +24,7 @@ import org.minbox.framework.logging.client.admin.report.LoggingAdminReport;
 import org.minbox.framework.logging.client.cache.LoggingCache;
 import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.minbox.framework.logging.core.MinBoxLog;
-import org.minbox.framework.logging.core.ReportResponse;
+import org.minbox.framework.logging.core.response.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
