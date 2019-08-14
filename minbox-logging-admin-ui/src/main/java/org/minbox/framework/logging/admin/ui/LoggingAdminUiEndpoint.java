@@ -21,18 +21,20 @@ import lombok.Builder;
 import lombok.Data;
 import org.minbox.framework.logging.admin.endpoint.Endpoint;
 import org.minbox.framework.logging.admin.storage.LoggingStorage;
-import org.minbox.framework.logging.admin.ui.response.LoggingResponse;
+import org.minbox.framework.logging.core.response.LoggingResponse;
+import org.minbox.framework.logging.core.response.ServiceResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.Principal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +56,10 @@ import static java.util.Collections.singletonMap;
 @Endpoint
 public class LoggingAdminUiEndpoint {
     /**
+     * logger instance
+     */
+    static Logger logger = LoggerFactory.getLogger(LoggingAdminUiEndpoint.class);
+    /**
      * Logging Admin Ui Settings
      */
     private Settings uiSetting;
@@ -71,23 +77,37 @@ public class LoggingAdminUiEndpoint {
     /**
      * Real-time query of link log information
      *
+     * @param queryCount query log count
      * @return log list
      */
     @GetMapping(value = "/logs")
     @ResponseBody
-    public List<LoggingResponse> logs() {
-        List<LoggingResponse> responses = new ArrayList<>();
-        LoggingResponse response = new LoggingResponse();
-        response.setTraceId("adminxxx");
-        response.setPayload("扩展内容");
-        response.setTraceId("adhnaodoayhodaio");
-        response.setContentType("application/json");
-        response.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        response.setHttpStatus(200);
-        response.setTimeConsuming(254);
-        response.setRequestUri("/index");
-        responses.add(response);
-        return responses;
+    public List<LoggingResponse> logs(@RequestParam(value = "queryCount", defaultValue = "500") int queryCount) {
+        try {
+            List<LoggingResponse> loggingResponseList = loggingStorage.findTopList(queryCount);
+            return loggingResponseList;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of log collectors
+     * {@link ServiceResponse}
+     *
+     * @return ServiceResponse
+     */
+    @GetMapping(value = "/services")
+    @ResponseBody
+    public List<ServiceResponse> applications() {
+        try {
+            List<ServiceResponse> serviceResponseList = loggingStorage.findAllService();
+            return serviceResponseList;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**

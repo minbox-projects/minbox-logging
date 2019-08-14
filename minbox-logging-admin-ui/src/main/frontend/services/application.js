@@ -81,45 +81,6 @@ class Application {
     })
   }
 
-  static async list() {
-    return axios.get('applications', {
-      headers: {'Accept': 'application/json'},
-      transformResponse: Application._transformResponse
-    });
-  }
-
-  static getStream() {
-    return concat(
-      from(waitForPolyfill()).pipe(ignoreElements()),
-      Observable.create(observer => {
-        const eventSource = new EventSource('applications');
-        eventSource.onmessage = message => observer.next({
-          ...message,
-          data: Application._transformResponse(message.data)
-        });
-
-        eventSource.onerror = err => observer.error(err);
-        return () => eventSource.close();
-      })
-    );
-  }
-
-  async fetchLoggers() {
-    const responses = convertBody(
-      (await this.axios.get(uri`actuator/loggers`, {headers: {'Accept': actuatorMimeTypes}})).data
-    );
-    throwOnError(responses);
-    return {responses};
-  }
-
-  async configureLogger(name, level) {
-    const responses = (await this.axios.post(
-      uri`actuator/loggers/${name}`,
-      {configuredLevel: level},
-      {headers: {'Content-Type': 'application/json'}}
-    )).data;
-    throwOnError(responses);
-  }
 
   static _transformResponse(data) {
     if (!data) {

@@ -64,28 +64,7 @@ export default class {
   }
 
   start() {
-    const list = defer(() => Application.list())
-      .pipe(
-        tap(
-          undefined,
-          undefined,
-          () => this._dispatchEvent('connected')
-        ),
-        concatMap(message => message.data)
-      );
-    const stream = Application.getStream()
-      .pipe(map(message => message.data));
-    this.subscription = concat(list, stream)
-      .pipe(
-        retryWhen(errors => errors.pipe(
-          tap(error => this._dispatchEvent('error', error)),
-          delay(5000)
-        )),
-        bufferTime(250),
-        filter(a => a.length > 0)
-      ).subscribe({
-        next: applications => this.updateApplications(applications)
-      });
+
   }
 
   updateApplications(applications) {

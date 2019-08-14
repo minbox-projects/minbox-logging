@@ -88,13 +88,13 @@
       }
     },
     install({viewRegistry}) {
-      viewRegistry.addView({
+      /*viewRegistry.addView({
         path: '/wallboard',
         name: 'wallboard',
         label: 'wallboard.label',
         order: -100,
         component: this
-      });
+      });*/
     }
   };
 </script>

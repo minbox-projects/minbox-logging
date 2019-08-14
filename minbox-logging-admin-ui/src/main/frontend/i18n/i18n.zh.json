@@ -9,8 +9,18 @@
     "traceId": "链路编号",
     "uri": "请求日志",
     "status": "响应状态",
-    "contentType": "Content-Type",
+    "method": "请求方式",
+    "serviceId": "服务ID",
     "consumeTime": "耗时(ms)"
+  },
+  "services": {
+    "top-menu": "日志服务",
+    "title": "服务列表",
+    "id": "服务ID",
+    "ip": "服务IP",
+    "port": "服务端口号",
+    "lastReportTime": "最后上报时间",
+    "createTime": "首次上报时间"
   },
   "term": {
     "application": "Application",

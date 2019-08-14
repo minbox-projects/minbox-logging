@@ -17,7 +17,7 @@
 <template>
     <div class="section">
         <div class="container">
-            <h1 class="title" v-text="$t('log.title')"/>
+            <h1 class="title" v-text="$t('services.title')"/>
             <h2
                     v-if="filter.application"
                     v-text="filter.application"
@@ -31,39 +31,29 @@
             <table class="journal table is-fullwidth is-hoverable">
                 <thead>
                 <tr>
-                    <th v-text="$t('log.time')"/>
-                    <th v-text="$t('log.serviceId')"/>
-                    <th v-text="$t('log.traceId')"/>
-                    <th v-text="$t('log.uri')"/>
-                    <th v-text="$t('log.status')"/>
-                    <th v-text="$t('log.method')"/>
-                    <th v-text="$t('log.consumeTime')"/>
+                    <th v-text="$t('services.id')"/>
+                    <th v-text="$t('services.ip')"/>
+                    <th v-text="$t('services.port')"/>
+                    <th v-text="$t('services.lastReportTime')"/>
+                    <th v-text="$t('services.createTime')"/>
                 </tr>
                 </thead>
                 <transition-group tag="tbody" name="fade-in">
-                    <tr key="new-logs" v-if="newlogsCount > 0">
+                    <tr key="new-logs" v-if="newServicesCount > 0">
                         <td
                                 colspan="6"
                                 class="has-text-primary has-text-centered is-selectable"
-                                v-text="`${newlogsCount} new logs`"
+                                v-text="`${newServicesCount} new logs`"
                                 @click="showNewlogs"
                         />
                     </tr>
-                    <template v-for="log in listedlogs" :key="log.traceId">
-                        <tr class="is-selectable" :key="log.key"
-                            @click="showPayload[log.key] ? $delete(showPayload, log.key) : $set(showPayload, log.key, true)">
-                            <td v-text="format(new Date(log.createTime),'yyyy-MM-dd hh:mm:ss')"/>
-                            <td v-text="log.serviceId"/>
-                            <td v-text="log.traceId"/>
-                            <td v-text="log.requestUri"/>
-                            <td v-text="log.httpStatus"/>
-                            <td v-text="log.requestMethod"/>
-                            <td v-text="log.timeConsuming"/>
-                        </tr>
-                        <tr :key="`${log.key}-detail`" v-if="showPayload[log.key]">
-                            <td colspan="7">
-                                <pre class="is-breakable" v-text="toJson(log.payload)"/>
-                            </td>
+                    <template v-for="service in listServices">
+                        <tr class="is-selectable" :key="service.key">
+                            <td v-text="service.id"/>
+                            <td v-text="service.ip"/>
+                            <td v-text="service.port"/>
+                            <td v-text="format(new Date(service.lastReportTime),'yyyy-MM-dd hh:mm:ss')"/>
+                            <td v-text="format(new Date(service.createTime),'yyyy-MM-dd hh:mm:ss')"/>
                         </tr>
                     </template>
                 </transition-group>
@@ -79,20 +69,17 @@
     import isEqual from 'lodash/isEqual';
     import uniq from 'lodash/uniq';
 
-    class Log {
-        constructor({serviceId, createTime, traceId, requestUri, requestMethod, timeConsuming, httpStatus, ...payload}) {
-            this.serviceId = serviceId;
+    class Service {
+        constructor({id, ip, port, lastReportTime, createTime}) {
+            this.id = id;
+            this.ip = ip;
+            this.port = port;
+            this.lastReportTime = lastReportTime;
             this.createTime = createTime;
-            this.traceId = traceId;
-            this.requestUri = requestUri;
-            this.requestMethod = requestMethod;
-            this.httpStatus = httpStatus;
-            this.timeConsuming = timeConsuming;
-            this.payload = payload;
         }
 
         get key() {
-            return `${this.traceId}`;
+            return `${this.id}`;
         }
     }
 
@@ -115,10 +102,10 @@
                     return names;
                 }, {});
             },
-            listedlogs() {
+            listServices() {
                 return this.filterlogs(this.logs.slice(this.listOffset));
             },
-            newlogsCount() {
+            newServicesCount() {
                 return this.filterlogs(this.logs.slice(0, this.listOffset)).length;
             }
         },
@@ -194,10 +181,10 @@
         },
         async created() {
             try {
-                // get request logs
-                const response = await Instance.fetchLogs();
-                const logs = response.data.sort(compareBy(v => v.createTime)).reverse().map(e => new Log(e));
-                this.logs = Object.freeze(logs);
+                // get request services
+                const response = await Instance.fetchServices();
+                const services = response.data.sort(compareBy(v => v.createTime)).reverse().map(e => new Service(e));
+                this.logs = Object.freeze(services);
                 this.error = null;
             } catch (error) {
                 console.warn('Fetching logs failed:', error);
@@ -206,13 +193,12 @@
         },
         install({viewRegistry}) {
             viewRegistry.addView({
-                path: '/logs',
-                name: 'logs',
-                label: 'log.top-menu',
-                order: 100,
+                path: '/services',
+                name: 'services',
+                label: 'services.top-menu',
+                order: 99,
                 component: this
             });
-            viewRegistry.addRedirect('/', 'logs');
         }
     };
 </script>

@@ -44,7 +44,7 @@
           <a class="button is-black is-outlined" href="https://github.com/hengboy/api-boot" target="_blank">
             <font-awesome-icon size="lg" :icon="['fab', 'github']" />&nbsp;GitHub源码
           </a>
-          <a class="button is-gitter is-outlined" href="https://gitee.com/hengboy/api-boot" target="_blank">
+          <a class="button is-gitter is-outlined" href="https://gitee.com/minbox-projects/api-boot" target="_blank">
             <font-awesome-icon size="lg" :icon="['fab', 'gitter']" />&nbsp;码云源码
           </a>
         </div>

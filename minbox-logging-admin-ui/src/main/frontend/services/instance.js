@@ -253,11 +253,21 @@ class Instance {
     }
 
     /**
+     * fetch service list
+     * @returns {Promise<void>}
+     */
+    static async fetchServices() {
+        return axios.get(uri`services`, {
+            headers: {'Accept': 'application/json'}
+        });
+    }
+
+    /**
      * fetch logs
      * @returns {Promise<void>}
      */
     static async fetchLogs() {
-        return axios.get(uri`logs`, {
+        return axios.get(uri`logs?queryCount=500`, {
             headers: {'Accept': 'application/json'}
         });
     }

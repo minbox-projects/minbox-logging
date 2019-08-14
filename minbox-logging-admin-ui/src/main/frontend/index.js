@@ -93,10 +93,10 @@ new Vue({
   created() {
     applicationStore.addEventListener('connected', this.onConnected);
     applicationStore.addEventListener('error', this.onError);
-    applicationStore.start();
+    //applicationStore.start();
   },
   beforeDestroy() {
-    applicationStore.stop();
+    //applicationStore.stop();
     applicationStore.removeEventListener('connected', this.onConnected);
     applicationStore.removeEventListener('error', this.onError)
   }
