@@ -19,8 +19,11 @@ package org.minbox.framework.logging.admin.storage;
 
 
 import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.logging.core.response.LoggingResponse;
+import org.minbox.framework.logging.core.response.ServiceResponse;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * ApiBoot Logging Storage
@@ -64,6 +67,24 @@ public interface LoggingStorage {
      * @throws SQLException Sql Exception
      */
     String selectServiceDetailId(String serviceId, String serviceIp, int servicePort) throws SQLException;
+
+    /**
+     * select all service
+     * {@link ServiceResponse}
+     *
+     * @return ServiceResponse
+     * @throws SQLException Sql Exception
+     */
+    List<ServiceResponse> findAllService() throws SQLException;
+
+    /**
+     * select top logging list
+     * {@link LoggingResponse}
+     *
+     * @return LoggingResponse
+     * @throws SQLException Sql Exception
+     */
+    List<LoggingResponse> findTopList(int topCount) throws SQLException;
 
     /**
      * Update ServiceDetail Last Report Time

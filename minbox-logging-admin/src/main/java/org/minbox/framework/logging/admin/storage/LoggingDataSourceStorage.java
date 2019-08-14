@@ -19,11 +19,15 @@ package org.minbox.framework.logging.admin.storage;
 
 import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.logging.core.response.LoggingResponse;
+import org.minbox.framework.logging.core.response.ServiceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -45,6 +49,10 @@ public class LoggingDataSourceStorage implements LoggingStorage {
      */
     private static final String SQL_INSERT_SERVICE_DETAILS = "insert into logging_service_details (lsd_id, lsd_service_id, lsd_service_ip, lsd_service_port) values (?,?,?,?)";
     /**
+     * Select All Service SQL
+     */
+    private static final String SQL_SELECT_SERVICE_DETAILS = "select lsd_id, lsd_service_id, lsd_service_ip, lsd_service_port,lsd_last_report_time,lsd_create_time from logging_service_details";
+    /**
      * Select ServiceDetails Id SQL
      */
     private static final String SQL_SELECT_SERVICE_DETAILS_ID = "select lsd_id from logging_service_details where lsd_service_id = ? and lsd_service_ip = ? and lsd_service_port = ? limit 1";
@@ -52,6 +60,13 @@ public class LoggingDataSourceStorage implements LoggingStorage {
      * Update ServiceDetail Last Report Time SQL
      */
     private static final String SQL_UPDATE_LAST_REPORT_SERVICE_DETAILS = "update logging_service_details set lsd_last_report_time = ? where lsd_id = ?";
+    /**
+     * Select Trace Logs
+     */
+    private static final String SQL_SELECT_LOG = "select logging_request_logs.*, lsd_service_id,lsd_service_ip,lsd_service_port " +
+            "from logging_request_logs left join logging_service_details on lsd_id = lrl_service_detail_id " +
+            "where lrl_parent_span_id is null " +
+            "order by lrl_create_time desc";
     /**
      * Insert Request Log SQL
      */
@@ -101,6 +116,49 @@ public class LoggingDataSourceStorage implements LoggingStorage {
     }
 
     /**
+     * find top count logs
+     *
+     * @param topCount top count
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<LoggingResponse> findTopList(int topCount) throws SQLException {
+        List<LoggingResponse> responses = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_SELECT_LOG);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            LoggingResponse response = new LoggingResponse();
+            response.setCreateTime(rs.getTimestamp("lrl_create_time"));
+            response.setTraceId(rs.getString("lrl_trace_id"));
+            response.setHttpStatus(rs.getInt("lrl_http_status"));
+            response.setTimeConsuming(rs.getInt("lrl_time_consuming"));
+            response.setExceptionStack(rs.getString("lrl_exception_stack"));
+            response.setSpanId(rs.getString("lrl_span_id"));
+            response.setParentSpanId(rs.getString("lrl_parent_span_id"));
+            response.setServiceId(rs.getString("lsd_service_id"));
+            response.setServiceIp(rs.getString("lsd_service_ip"));
+            response.setServicePort(rs.getString("lsd_service_port"));
+            response.setStartTime(rs.getLong("lrl_start_time"));
+            response.setEndTime(rs.getLong("lrl_end_time"));
+
+            response.setRequestUri(rs.getString("lrl_request_uri"));
+            response.setRequestMethod(rs.getString("lrl_request_method"));
+            response.setRequestBody(rs.getString("lrl_request_body"));
+            response.setRequestHeader(rs.getString("lrl_request_headers"));
+            response.setRequestIp(rs.getString("lrl_request_ip"));
+            response.setRequestParam(rs.getString("lrl_request_params"));
+
+            response.setResponseBody(rs.getString("lrl_response_body"));
+            response.setResponseHeader(rs.getString("lrl_response_headers"));
+            responses.add(response);
+        }
+        closeConnection(connection);
+        return responses;
+    }
+
+    /**
      * Insert ServiceDetails
      *
      * @param serviceId   ServiceId
@@ -122,6 +180,33 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.close();
         closeConnection(connection);
         return serviceDetailId;
+    }
+
+    /**
+     * Select All Service List
+     * {@link ServiceResponse}
+     *
+     * @return Service Response
+     * @throws SQLException SqlException
+     */
+    @Override
+    public List<ServiceResponse> findAllService() throws SQLException {
+        List<ServiceResponse> responses = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_SELECT_SERVICE_DETAILS);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            ServiceResponse response = new ServiceResponse();
+            response.setId(rs.getString("lsd_service_id"));
+            response.setIp(rs.getString("lsd_service_ip"));
+            response.setPort(rs.getInt("lsd_service_port"));
+            response.setLastReportTime(rs.getTimestamp("lsd_last_report_time"));
+            response.setCreateTime(rs.getTimestamp("lsd_create_time"));
+            responses.add(response);
+        }
+        ps.close();
+        closeConnection(connection);
+        return responses;
     }
 
     /**
