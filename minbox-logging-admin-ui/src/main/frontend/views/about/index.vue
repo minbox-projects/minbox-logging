@@ -31,7 +31,7 @@
         </p>
         <p>
           在使用过程中，如果你遇到了Bug、或者有建议要提交，请访问
-          <a href="https://gitee.com/hengboy/api-boot/issues" target="_blank">
+          <a href="https://gitee.com/minbox-projects/api-boot/issues" target="_blank">
             提出你的问题
           </a>.
         </p>
