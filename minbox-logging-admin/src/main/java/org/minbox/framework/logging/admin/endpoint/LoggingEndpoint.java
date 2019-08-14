@@ -19,7 +19,7 @@ package org.minbox.framework.logging.admin.endpoint;
 
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.core.LoggingClientNotice;
-import org.minbox.framework.logging.core.ReportResponse;
+import org.minbox.framework.logging.core.response.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
