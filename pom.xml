@@ -12,7 +12,7 @@
     <groupId>org.minbox.framework</groupId>
     <artifactId>minbox-logging</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <modules>
         <module>minbox-logging-client</module>
         <module>minbox-logging-admin</module>
@@ -20,7 +20,7 @@
         <module>minbox-logging-core</module>
     </modules>
     <properties>
-        <minbox.version>1.0.0-SNAPSHOT</minbox.version>
+        <minbox.version>1.0.0.RELEASE</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
