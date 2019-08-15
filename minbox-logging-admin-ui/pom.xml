@@ -5,7 +5,7 @@
     <parent>
         <artifactId>minbox-logging</artifactId>
         <groupId>org.minbox.framework</groupId>
-        <version>1.0.0.RELEASE</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>minbox-logging-admin-ui</artifactId>
@@ -41,7 +41,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
-                    <execution>
+                    <!--<execution>
                         <id>npm-install</id>
                         <phase>validate</phase>
                         <goals>
@@ -53,7 +53,7 @@
                                 <argument>ci</argument>
                             </arguments>
                         </configuration>
-                    </execution>
+                    </execution>-->
                     <execution>
                         <id>npm-build</id>
                         <phase>generate-resources</phase>
