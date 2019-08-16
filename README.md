@@ -57,7 +57,7 @@
 
 因`logging-admin-ui`所需`vue-cli-service`命令支持，本地需要安装`vue-cli`。
 
-###拉取源码到本地
+### 拉取源码到本地
 
 ```sh
 git clone git@gitee.com:minbox-projects/minbox-logging.git
@@ -69,7 +69,7 @@ git clone git@gitee.com:minbox-projects/minbox-logging.git
 mvn install
 ```
 
-###编译 & 打包生成jar包 
+### 编译 & 打包生成jar包 
 
 ```sh
 mvn clean package
