@@ -29,6 +29,32 @@
 
 `MinBox Logging Admin`提供了界面管理应用程序，通过`VUE`前端框架进行编写界面与管理端的接口通讯，实时展示`链路日志`、`日志采集服务列表`等信息，可查看每条链路日志的详细信息（包含：请求头、请求参数、响应内容、响应头、状态码、异常堆栈信息等）。
 
+### 整合Spring Security后的登录界面
+
+![](http://apiboot.minbox.io/img/logging/logging-admin-login.png)
+
+可以直接整合`Spring Security`来完成`Basic`安全认证。
+
+### 上报日志的服务列表
+
+![](http://apiboot.minbox.io/img/logging/logging-admin-service.png)
+
+请求日志的采集服务在第一次上报时，会自动创建一条服务记录，服务的唯一性是根据：`服务ID` + `服务IP` + `服务端Port` 来进行定义。
+
+> 在每次上报日志成功后会修改服务的最后一次上报时间。
+
+### 链路日志列表
+
+![](http://apiboot.minbox.io/img/logging/logging-admin-logs.png)
+
+链路日志是我们访问的入口服务生成，比如：`bff-user` -> `user-service`，链路日志产生的位置则是`bff-user`服务，链路日志是接口`请求的入口`也是做出`响应的结束位置`，因此我们可以在页面上查看接口的请求`参数详情`、`头信息`以及`响应的内容`，至于链路日志内的`日志单元`目前界面还未做展示，可以根据`traceId`链路日志编号自行去数据库查询。
+
+### 链路日志详情
+
+![](http://apiboot.minbox.io/img/logging/logging-admin-log-detail.png)
+
+每一个请求的链路日志都会包含上图中的全部字段，从请求开始 -> 响应结束一条链路闭合记录。
+
 ### 安全性
 
 `MinBox Logging Admin UI`内部提供了`login.html`登录页面，可以整合`Spring Security`通过配置`loginPageUrl`登录跳转地址来使用内置的登录页面，当然也可以自定义登录页面。
