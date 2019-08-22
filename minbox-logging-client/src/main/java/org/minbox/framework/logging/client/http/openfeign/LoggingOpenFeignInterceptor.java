@@ -48,6 +48,7 @@ public class LoggingOpenFeignInterceptor implements RequestInterceptor {
         MinBoxLog log = LogThreadLocal.get();
         requestTemplate.header(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
         requestTemplate.header(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
-        logger.debug("Setting ApiBoot Logging TraceId：{}，SpanId：{} With Openfeign.", log.getTraceId(), log.getSpanId());
+        logger.debug("RequestUri：{}, Method：{}，Setting Logging TraceId：{}，SpanId：{} With Openfeign.",
+                requestTemplate.url(), requestTemplate.request().httpMethod().toString(), log.getTraceId(), log.getSpanId());
     }
 }

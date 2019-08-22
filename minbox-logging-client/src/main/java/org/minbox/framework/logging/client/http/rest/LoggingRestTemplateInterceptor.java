@@ -64,7 +64,8 @@ public class LoggingRestTemplateInterceptor implements ClientHttpRequestIntercep
         if (!ObjectUtils.isEmpty(log)) {
             request.getHeaders().add(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
             request.getHeaders().add(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
-            logger.debug("Setting ApiBoot Logging TraceId：{}，SpanId：{} With RestTemplate.", log.getTraceId(), log.getSpanId());
+            logger.debug("RequestUri：{}, Method：{}，Setting Logging TraceId：{}，SpanId：{} With RestTemplate.",
+                    request.getURI().getPath(), request.getMethod().toString(), log.getTraceId(), log.getSpanId());
         }
         return execution.execute(request, body);
     }
