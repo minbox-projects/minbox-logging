@@ -17,6 +17,14 @@
 
 `MinBox Logging`是一款分布式、零侵入式的链路日志分析框架，支持`SpringCloud`微服务架构下配置使用，内部封装了`RestTemplate`、`OpenFeign`两种方式透传链路信息。
 
+## 零侵入式
+
+`MinBox Logging`无需使用注解配置采集链路日志，只需要添加`依赖`后简单配置`Minbox Loggin Admin`的相关`地址`或`服务名称`即可，每次在收到请求时就会把请求对应的链路日志详细信息自动上报到`MinBox Logging Admin`进行后续分析、告警通知等。
+
+## 链路日志分析图
+
+![](http://apiboot.minbox.io/img/logging/minbox-logging-trace.png)
+
 ## 日志客户端
 
 `链路日志`的采集端，也就是具体的业务服务，只需要添加`minbox-logging-client`客户端进行简单的配置就可以实现日志的采集以及日志的异步上报。
@@ -63,11 +71,11 @@
 
 ## 文档
 
-当前版本的文档，请访问[MinBox Logging Wikis](https://gitee.com/minbox-projects/minbox-logging/wikis/Home)
+当前版本的文档，请访问<a href="https://gitee.com/minbox-projects/minbox-logging/wikis" target="_blank">Wikis</a>
 
 ## 快速开始
 
-请访问快速开始的`wikis`文档来查看并快速接入`MinBox Logging`，[快速接入文档](https://gitee.com/minbox-projects/minbox-logging/wikis/quick-start)
+请访问快速开始的`wikis`文档来查看并快速接入`MinBox Logging`，<a href="https://gitee.com/minbox-projects/minbox-logging/wikis" target="_blank">快速接入文档</a>
 
 ## 源码方式构建
 
