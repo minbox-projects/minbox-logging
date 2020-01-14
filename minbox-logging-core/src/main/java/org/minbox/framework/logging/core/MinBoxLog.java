@@ -20,18 +20,13 @@ package org.minbox.framework.logging.core;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
  * ApiBoot Log Object
  *
  * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-15 16:41
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
  */
 @Data
 public class MinBoxLog implements Serializable {
@@ -111,4 +106,8 @@ public class MinBoxLog implements Serializable {
      * exception stack
      */
     private String exceptionStack;
+    /**
+     * Global method log list
+     */
+    private List<GlobalLog> globalLogs;
 }

@@ -52,10 +52,8 @@ public class LoggingRegistryCenterAdminDiscovery extends LoggingAbstractAdminDis
      */
     private LoadBalancerClient loadBalancerClient;
 
-    public LoggingRegistryCenterAdminDiscovery(String serviceId, String username, String password, LoadBalancerClient loadBalancerClient) {
+    public LoggingRegistryCenterAdminDiscovery(String serviceId, LoadBalancerClient loadBalancerClient) {
         this.serviceId = serviceId;
-        this.username = username;
-        this.password = password;
         this.loadBalancerClient = loadBalancerClient;
     }
 
@@ -73,6 +71,24 @@ public class LoggingRegistryCenterAdminDiscovery extends LoggingAbstractAdminDis
             throw new MinBoxLoggingException("There Is No Online ApiBoot Logging Admin Service.");
         }
         return serviceInstance.getUri().toString();
+    }
+
+    /**
+     * Setting basic auth username
+     *
+     * @param username {{@link #username}}
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Setting basic auth password
+     *
+     * @param password {@link #password}
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**

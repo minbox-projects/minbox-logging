@@ -78,22 +78,23 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
 
     /**
      * Report Logs Interval
+     * Recycle the request log when an exception is encountered
      *
      * @throws MinBoxLoggingException Logging Exception
      */
     @Override
     public void report() throws MinBoxLoggingException {
+        if (ObjectUtils.isEmpty(factoryBean.getLoggingAdminDiscovery())) {
+            logger.warn("Not set 【LoggingAdminDiscovery】in LoggingFactoryBean，don't invoke report request logs.");
+            return;
+        }
         List<MinBoxLog> logs = new ArrayList<>();
         LoggingCache loggingCache = factoryBean.getLoggingCache();
         Integer numberOfRequestLog = factoryBean.getNumberOfRequestLog();
         try {
-            // get log from cache
             logs = loggingCache.getLogs(numberOfRequestLog);
-            // execute report
             report(logs);
-        }
-        // Recycle the request log when an exception is encountered
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             if (!ObjectUtils.isEmpty(logs)) {
                 logs.stream().forEach(log -> loggingCache.cache(log));
@@ -114,16 +115,17 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
     @Override
     public void report(List<MinBoxLog> logs) throws MinBoxLoggingException {
         if (ObjectUtils.isEmpty(logs)) {
+            logger.warn("Don't have report request logs.");
             return;
         }
-        // ApiBoot Logging Admin Server Url
+        if (ObjectUtils.isEmpty(factoryBean.getLoggingAdminDiscovery())) {
+            logger.warn("Not set【LoggingAdminDiscovery】in LoggingFactoryBean，don't invoke report request logs.");
+            return;
+        }
         String adminServiceUrl = getAfterFormatAdminUrl();
-        // client notice entity
-        LoggingClientNotice clientNotice = new LoggingClientNotice();
-        clientNotice.getLoggers().addAll(logs);
-        clientNotice.setClientServiceId(factoryBean.getServiceId());
-        clientNotice.setClientServiceIp(factoryBean.getServiceAddress());
-        clientNotice.setClientServicePort(factoryBean.getServicePort());
+        logger.debug("Report logging admin url：{}", adminServiceUrl);
+        LoggingClientNotice notice = LoggingClientNotice.instance(
+                factoryBean.getServiceId(), factoryBean.getServiceAddress(), factoryBean.getServicePort(), logs);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -131,13 +133,14 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
         if (!ObjectUtils.isEmpty(basicAuth)) {
             headers.add(HEADER_AUTHORIZATION, basicAuth);
         }
-        HttpEntity<String> httpEntity = new HttpEntity(JSON.toJSONString(clientNotice), headers);
-
-        ResponseEntity<ReportResponse> response = factoryBean.getRestTemplate().postForEntity(adminServiceUrl, httpEntity, ReportResponse.class);
+        String noticeJson = JSON.toJSONString(notice);
+        HttpEntity<String> httpEntity = new HttpEntity(noticeJson, headers);
+        ResponseEntity<ReportResponse> response =
+                factoryBean.getRestTemplate().postForEntity(adminServiceUrl, httpEntity, ReportResponse.class);
         if (response.getStatusCode().is2xxSuccessful() && response.getBody().getStatus().equals(ReportResponse.SUCCESS)) {
-            logger.debug("Report Request Logging Successfully To Admin.");
+            logger.debug("Report request logging successfully to admin.");
         } else {
-            logger.error("Report Request Logging Error To Admin.");
+            logger.error("Report request logging error to admin.");
         }
     }
 
@@ -165,5 +168,6 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
         List<MinBoxLog> logs = factoryBean.getLoggingCache().getAll();
         // report to admin
         report(logs);
+        logger.debug("The program is destroyed to execute the request log in the report cache to admin successfully.");
     }
 }

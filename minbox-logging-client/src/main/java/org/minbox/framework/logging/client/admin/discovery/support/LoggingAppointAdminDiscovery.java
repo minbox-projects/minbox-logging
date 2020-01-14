@@ -18,6 +18,9 @@
 package org.minbox.framework.logging.client.admin.discovery.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
+import org.minbox.framework.logging.client.admin.discovery.lb.LoadBalanceNode;
+import org.minbox.framework.logging.client.admin.discovery.lb.LoadBalanceStrategy;
+import org.minbox.framework.logging.client.admin.discovery.lb.support.SmoothWeightedRoundRobinStrategy;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -47,17 +50,29 @@ public class LoggingAppointAdminDiscovery extends LoggingAbstractAdminDiscovery 
      */
     private String[] adminServerAddress;
     /**
+     * Choice logging admin load balancer{@link LoadBalanceStrategy}
+     */
+    private LoadBalanceStrategy loadBalanceStrategy;
+    /**
      * ApiBoot Logging Admin Server Address
      * To Current Thread
      */
     private final ThreadLocal<String> CURRENT_SERVER_ADDRESS = new ThreadLocal();
 
+    /**
+     * Set default load balance strategy {@link SmoothWeightedRoundRobinStrategy}
+     *
+     * @param adminServerAddress logging admin serviceAddress
+     */
     public LoggingAppointAdminDiscovery(String[] adminServerAddress) {
         this.adminServerAddress = adminServerAddress;
+        this.loadBalanceStrategy = new SmoothWeightedRoundRobinStrategy();
     }
 
     /**
-     * load balance lookup admin server address
+     * load balance lookup admin server address {@link LoadBalanceNode#getAddress()}
+     * get load-balanced admin address {@link LoadBalanceStrategy#lookup(String[])}
+     * exclude basic auth info {@link #extractBasicAuth(String)} and append {@link #HTTP_PREFIX}
      *
      * @return admin server address
      * @throws MinBoxLoggingException Logging Exception
@@ -65,14 +80,10 @@ public class LoggingAppointAdminDiscovery extends LoggingAbstractAdminDiscovery 
     @Override
     public String lookup() throws MinBoxLoggingException {
         Assert.notNull(adminServerAddress, "ApiBoot Logging Admin Server Address Is Null.");
-        String serverAddress = adminServerAddress[0];
-        CURRENT_SERVER_ADDRESS.set(serverAddress);
-        // have basic auth
-        if (serverAddress.indexOf(BASIC_SPLIT) > 0) {
-            serverAddress = serverAddress.substring(serverAddress.indexOf(BASIC_SPLIT) + 1);
-        }
-        // append http prefix
-        return HTTP_PREFIX + serverAddress;
+        String address = loadBalanceStrategy.lookup(adminServerAddress);
+        CURRENT_SERVER_ADDRESS.set(address);
+        address = extractBasicAuth(address);
+        return String.format("%s%s", HTTP_PREFIX, address);
     }
 
     /**
@@ -92,5 +103,30 @@ public class LoggingAppointAdminDiscovery extends LoggingAbstractAdminDiscovery 
             }
         }
         return null;
+    }
+
+    /**
+     * Set load balance strategy
+     *
+     * @param loadBalanceStrategy {@link LoadBalanceStrategy}
+     * @see org.minbox.framework.logging.client.admin.discovery.lb.support.DefaultLoadBalanceStrategy
+     * @see org.minbox.framework.logging.client.admin.discovery.lb.support.RandomWeightedStrategy
+     * @see SmoothWeightedRoundRobinStrategy
+     */
+    public void setLoadBalanceStrategy(LoadBalanceStrategy loadBalanceStrategy) {
+        this.loadBalanceStrategy = loadBalanceStrategy;
+    }
+
+    /**
+     * Extract basic auth from logging admin server address
+     *
+     * @param adminServerAddress {@link LoadBalanceStrategy#lookup(String[])}
+     * @return admin server address
+     */
+    protected String extractBasicAuth(String adminServerAddress) {
+        if (adminServerAddress.indexOf(BASIC_SPLIT) > 0) {
+            adminServerAddress = adminServerAddress.substring(adminServerAddress.indexOf(BASIC_SPLIT) + 1);
+        }
+        return adminServerAddress;
     }
 }

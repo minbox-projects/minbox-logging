@@ -38,8 +38,13 @@ import java.io.IOException;
  * Gitee：https://gitee.com/hengboy
  * GitHub：https://github.com/hengboy
  */
-@WebFilter(urlPatterns = "/*", filterName = "apiBootLoggingFilter")
+@WebFilter(urlPatterns = "/*", filterName = "loggingBodyFilter")
 public class LoggingBodyFilter implements Filter {
+    /**
+     * the bean name of {@link LoggingBodyFilter}
+     */
+    public static final String BEAN_NAME = "loggingBodyFilter";
+
     /**
      * Wrapper Body
      * replace http request body instance

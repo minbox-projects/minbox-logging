@@ -36,6 +36,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class LoggingReportScheduled {
     /**
+     * the bean name of {@link LoggingReportScheduled}
+     */
+    public static final String BEAN_NAME = "loggingReportScheduled";
+    /**
      * Scheduled Executor Service
      */
     private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
@@ -47,6 +51,7 @@ public class LoggingReportScheduled {
      */
     public LoggingReportScheduled(LoggingFactoryBean factoryBean) {
         // scheduled report request logs
-        executorService.scheduleAtFixedRate(() -> factoryBean.getLoggingAdminReport().report(), factoryBean.getReportInitialDelaySecond(), factoryBean.getReportIntervalSecond(), TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(() -> factoryBean.getLoggingAdminReport().report(),
+                factoryBean.getReportInitialDelaySecond(), factoryBean.getReportIntervalSecond(), TimeUnit.SECONDS);
     }
 }

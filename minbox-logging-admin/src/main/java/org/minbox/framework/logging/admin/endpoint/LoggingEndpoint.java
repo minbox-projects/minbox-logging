@@ -19,11 +19,13 @@ package org.minbox.framework.logging.admin.endpoint;
 
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.core.LoggingClientNotice;
+import org.minbox.framework.logging.core.annotation.Endpoint;
 import org.minbox.framework.logging.core.response.ReportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +46,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * GitHub：https://github.com/hengboy
  */
 @Endpoint
-public class LoggingEndpoint {
+public class LoggingEndpoint implements ApplicationContextAware {
+    /**
+     * The bean name of {@link LoggingEndpoint}
+     */
+    public static final String BEAN_NAME = "loggingEndpoint";
     /**
      * logger instance
      */
@@ -53,7 +59,6 @@ public class LoggingEndpoint {
     /**
      * Application Context
      */
-    @Autowired
     private ApplicationContext applicationContext;
 
     /**
@@ -78,5 +83,10 @@ public class LoggingEndpoint {
         ReportResponse response = new ReportResponse();
         response.setStatus(reportSuccess ? ReportResponse.SUCCESS : ReportResponse.ERROR);
         return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

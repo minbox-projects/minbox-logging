@@ -56,4 +56,23 @@ public class LoggingClientNotice implements Serializable {
      * ApiBoot Logging Request Log
      */
     private List<MinBoxLog> loggers = new ArrayList<>();
+
+    /**
+     * Create new {@link LoggingClientNotice} instance
+     *
+     * @param clientServiceId   {@link #clientServiceId}
+     * @param clientServiceIp   {@link #clientServiceIp}
+     * @param clientServicePort {@link #clientServicePort}
+     * @param loggers           {@link #loggers}
+     * @return {@link LoggingClientNotice}
+     */
+    public static LoggingClientNotice instance(
+            String clientServiceId, String clientServiceIp, Integer clientServicePort, List<MinBoxLog> loggers) {
+        LoggingClientNotice notice = new LoggingClientNotice();
+        notice.setClientServiceId(clientServiceId);
+        notice.setClientServiceIp(clientServiceIp);
+        notice.setClientServicePort(clientServicePort);
+        notice.setLoggers(loggers);
+        return notice;
+    }
 }

@@ -18,10 +18,12 @@
         <module>minbox-logging-admin</module>
         <module>minbox-logging-admin-ui</module>
         <module>minbox-logging-core</module>
+        <module>minbox-logging-spring-context</module>
+        <module>minbox-logging-samples</module>
     </modules>
     <properties>
-        <revision>1.0.1-SNAPSHOT</revision>
-        <minbox.version>1.0.0.RELEASE</minbox.version>
+        <revision>1.0.3.RELEASE</revision>
+        <minbox.version>1.0.2.RELEASE</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,16 +62,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <optional>true</optional>
-        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -84,20 +77,12 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>Snapshots</id>
-            <name>Snapshots</name>
+            <id>maven-snapshots</id>
+            <name>Maven Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>Central</id>
-            <name>Maven Repository Switchboard</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
     </repositories>
     <build>

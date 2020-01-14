@@ -18,6 +18,7 @@
 package org.minbox.framework.logging.admin.listener;
 
 import com.alibaba.fastjson.JSON;
+import org.minbox.framework.logging.admin.LoggingAdminFactoryBean;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.core.LoggingClientNotice;
@@ -41,21 +42,18 @@ import org.springframework.context.event.SmartApplicationListener;
  */
 public class ReportLogJsonFormatListener implements SmartApplicationListener {
     /**
+     * The bean name of {@link ReportLogJsonFormatListener}
+     */
+    public static final String BEAN_NAME = "reportLogJsonFormatListener";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(ReportLogJsonFormatListener.class);
-    /**
-     * Whether to print the logs reported on the console
-     */
-    private boolean showConsoleReportLog;
-    /**
-     * Format console log JSON
-     */
-    private boolean formatConsoleLogJson;
 
-    public ReportLogJsonFormatListener(boolean showConsoleReportLog, boolean formatConsoleLogJson) {
-        this.showConsoleReportLog = showConsoleReportLog;
-        this.formatConsoleLogJson = formatConsoleLogJson;
+    private LoggingAdminFactoryBean loggingAdminFactoryBean;
+
+    public ReportLogJsonFormatListener(LoggingAdminFactoryBean loggingAdminFactoryBean) {
+        this.loggingAdminFactoryBean = loggingAdminFactoryBean;
     }
 
     /**
@@ -68,10 +66,11 @@ public class ReportLogJsonFormatListener implements SmartApplicationListener {
     public void onApplicationEvent(ApplicationEvent event) {
         try {
             ReportLogEvent reportLogEvent = (ReportLogEvent) event;
-            if (showConsoleReportLog) {
+            if (loggingAdminFactoryBean.isShowConsoleReportLog()) {
                 LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
                 String serviceInfo = String.format("%s -> %s", notice.getClientServiceId(), notice.getClientServiceIp());
-                logger.info("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo, formatConsoleLogJson ? JsonUtil.beautifyJson(notice.getLoggers()) : JSON.toJSONString(notice.getLoggers()));
+                logger.info("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo,
+                        loggingAdminFactoryBean.isFormatConsoleLogJson() ? JsonUtil.beautifyJson(notice.getLoggers()) : JSON.toJSONString(notice.getLoggers()));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

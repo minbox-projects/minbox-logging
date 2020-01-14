@@ -47,6 +47,10 @@ import java.util.Map;
  */
 public class LoggingNoticeListener implements SmartApplicationListener, ApplicationContextAware {
     /**
+     * the bean name of {@link LoggingNoticeListener}
+     */
+    public static final String BEAN_NAME = "loggingNoticeListener";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingNoticeListener.class);
@@ -72,7 +76,7 @@ public class LoggingNoticeListener implements SmartApplicationListener, Applicat
         }
         List<LoggingNotice> noticeList = new ArrayList<>(noticeMap.values());
         OrderComparator.sort(noticeList);
-        noticeList.stream().forEach(loggingNotice -> loggingNotice.notice(minBoxLog));
+        noticeList.forEach(loggingNotice -> loggingNotice.notice(minBoxLog));
     }
 
     @Override

@@ -11,7 +11,10 @@ import org.minbox.framework.logging.client.span.support.LoggingDefaultSpanGenera
 import org.minbox.framework.logging.client.tracer.LoggingTraceGenerator;
 import org.minbox.framework.logging.client.tracer.support.LoggingDefaultTraceGenerator;
 import org.minbox.framework.logging.core.ReportAway;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.Nullable;
@@ -30,7 +33,7 @@ import java.util.List;
  *
  * @author 恒宇少年
  */
-public class LoggingFactoryBean implements EnvironmentAware, InitializingBean {
+public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, ApplicationContextAware {
     /**
      * applicationContext config environment
      * Affected by "spring.profiles.active" config properties
@@ -39,6 +42,11 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean {
     @Nullable
     private Environment environment;
 
+    /**
+     * application context
+     * {@link ApplicationContextAware}
+     */
+    private ApplicationContext applicationContext;
     /**
      * logging tracer generator away
      * default is uuid
@@ -114,26 +122,44 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean {
      * Service Port
      */
     private Integer servicePort;
+    /**
+     * show log in console
+     */
+    private boolean showConsoleLog;
+    /**
+     * format log in console
+     */
+    private boolean formatConsoleLog;
+
+    /**
+     * Examples of classes required for initialization of constructors
+     * {@link LoggingDefaultTraceGenerator}
+     * {@link LoggingDefaultSpanGenerator}
+     * {@link LoggingMemoryCache}
+     */
+    public LoggingFactoryBean() {
+        this.traceGenerator = new LoggingDefaultTraceGenerator();
+        this.spanGenerator = new LoggingDefaultSpanGenerator();
+        this.loggingCache = new LoggingMemoryCache();
+    }
 
     /**
      * after properties set handler
      * Initialize service parameter configuration
-     * {@link LoggingTraceGenerator}
-     * {@link LoggingSpanGenerator}
-     * {@link LoggingMemoryCache}
      * {@link RestTemplate}
+     * {@link LoggingAdminReportSupport}
      *
      * @throws Exception
      */
     @Override
     public void afterPropertiesSet() throws Exception {
         this.serviceId = environment.getProperty("spring.application.name");
-        this.servicePort = Integer.valueOf(environment.getProperty("server.port"));
+        Assert.notNull(this.serviceId, "Please add the 【spring.application.name】 configuration in the application.yml or application.properties");
+        String serverPort = environment.getProperty("server.port");
+        Assert.notNull(serverPort, "Please add the 【server.port】 configuration in the application.yml or application.properties");
+        this.servicePort = Integer.valueOf(serverPort);
         InetAddress inetAddress = InetAddress.getLocalHost();
         this.serviceAddress = inetAddress.getHostAddress();
-        this.traceGenerator = new LoggingDefaultTraceGenerator();
-        this.spanGenerator = new LoggingDefaultSpanGenerator();
-        this.loggingCache = new LoggingMemoryCache();
         this.restTemplate = new RestTemplate();
         this.restTemplate.setInterceptors(Arrays.asList(new LoggingRestTemplateInterceptor()));
         this.loggingAdminReport = new LoggingAdminReportSupport(this);
@@ -143,6 +169,16 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean {
     public void setEnvironment(Environment environment) {
         Assert.notNull(environment, "Environment must not be null");
         this.environment = environment;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Assert.notNull(applicationContext, "ApplicationContext must not be null");
+        this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public LoggingTraceGenerator getTraceGenerator() {
@@ -242,5 +278,21 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean {
 
     public void setReportIntervalSecond(int reportIntervalSecond) {
         this.reportIntervalSecond = reportIntervalSecond;
+    }
+
+    public boolean isShowConsoleLog() {
+        return showConsoleLog;
+    }
+
+    public void setShowConsoleLog(boolean showConsoleLog) {
+        this.showConsoleLog = showConsoleLog;
+    }
+
+    public boolean isFormatConsoleLog() {
+        return formatConsoleLog;
+    }
+
+    public void setFormatConsoleLog(boolean formatConsoleLog) {
+        this.formatConsoleLog = formatConsoleLog;
     }
 }

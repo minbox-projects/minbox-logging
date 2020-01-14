@@ -18,6 +18,7 @@
 package org.minbox.framework.logging.admin.storage;
 
 import com.alibaba.fastjson.JSON;
+import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
@@ -40,6 +41,11 @@ import java.util.UUID;
  * GitHub：https://github.com/hengboy
  */
 public class LoggingDataSourceStorage implements LoggingStorage {
+    /**
+     * The bean name of {@link LoggingDataSourceStorage}
+     */
+    public static final String BEAN_NAME = "loggingDataSourceStorage";
+
     /**
      * logger instance
      */
@@ -74,11 +80,47 @@ public class LoggingDataSourceStorage implements LoggingStorage {
             "                                  lrl_start_time, lrl_end_time, lrl_http_status, lrl_request_body, lrl_request_headers,\n" +
             "                                  lrl_request_ip, lrl_request_method, lrl_request_uri, lrl_response_body,\n" +
             "                                  lrl_response_headers, lrl_time_consuming,lrl_request_params,lrl_exception_stack) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-
+    /**
+     * Insert Global Log SQL
+     */
+    private static final String SQL_INSERT_GLOBAL_LOG = "insert into logging_global_logs (lgl_id, lgl_request_log_id, lgl_level, lgl_content, lgl_caller_class,\n" +
+            "                                 lgl_caller_method, lgl_caller_code_line_number, lgl_exception_stack, lgl_create_time) values (?,?,?,?,?,?,?,?,?);";
+    /**
+     * The Data Source {@link DataSource}
+     * save the logs to database with dataSource
+     */
     private DataSource dataSource;
 
     public LoggingDataSourceStorage(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    /**
+     * Insert Global log
+     *
+     * @param requestLogId request log id
+     * @param log          {@link GlobalLog}
+     * @return the global log id
+     * @throws SQLException
+     */
+    @Override
+    public String insertGlobalLog(String requestLogId, GlobalLog log) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_INSERT_GLOBAL_LOG);
+        String globalLogId = UUID.randomUUID().toString();
+        ps.setString(1, globalLogId);
+        ps.setString(2, requestLogId);
+        ps.setString(3, log.getLevel().toString());
+        ps.setString(4, log.getContent());
+        ps.setString(5, log.getCallerClass());
+        ps.setString(6, log.getCallerMethod());
+        ps.setInt(7, log.getCallerCodeLineNumber());
+        ps.setString(8, log.getExceptionStack());
+        ps.setLong(9, log.getCreateTime());
+        ps.executeUpdate();
+        ps.close();
+        closeConnection(connection);
+        return globalLogId;
     }
 
     /**
@@ -89,10 +131,11 @@ public class LoggingDataSourceStorage implements LoggingStorage {
      * @throws SQLException SqlException
      */
     @Override
-    public void insertLog(String serviceDetailId, MinBoxLog log) throws SQLException {
+    public String insertLog(String serviceDetailId, MinBoxLog log) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(SQL_INSERT_LOG);
-        ps.setString(1, UUID.randomUUID().toString());
+        String logId = UUID.randomUUID().toString();
+        ps.setString(1, logId);
         ps.setString(2, serviceDetailId);
         ps.setString(3, log.getTraceId());
         ps.setString(4, log.getParentSpanId());
@@ -113,6 +156,7 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.executeUpdate();
         ps.close();
         closeConnection(connection);
+        return logId;
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.minbox.framework.logging.client.notice.support;
 
 import com.alibaba.fastjson.JSON;
+import org.minbox.framework.logging.client.LoggingFactoryBean;
 import org.minbox.framework.logging.client.notice.LoggingNotice;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.util.JsonUtil;
@@ -14,17 +15,21 @@ import org.slf4j.LoggerFactory;
  */
 public class LoggingLocalNotice implements LoggingNotice {
     /**
+     * the bean name of {@link LoggingLocalNotice}
+     */
+    public static final String BEAN_NAME = "loggingLocalNotice";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingLocalNotice.class);
     /**
-     * Whether to output logs in the console
+     * Logging factory bean {@link LoggingFactoryBean}
      */
-    private boolean showConsoleLog;
-    /**
-     * Whether to format log information when output
-     */
-    private boolean formatConsoleLogJson;
+    private LoggingFactoryBean loggingFactoryBean;
+
+    public LoggingLocalNotice(LoggingFactoryBean loggingFactoryBean) {
+        this.loggingFactoryBean = loggingFactoryBean;
+    }
 
     /**
      * Output formatted log information according to configuration in console
@@ -34,21 +39,14 @@ public class LoggingLocalNotice implements LoggingNotice {
      */
     @Override
     public void notice(MinBoxLog minBoxLog) {
-        if (showConsoleLog) {
-            logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(), formatConsoleLogJson ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
+        if (loggingFactoryBean.isShowConsoleLog()) {
+            logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(),
+                    loggingFactoryBean.isFormatConsoleLog() ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
         }
     }
 
     @Override
     public int getOrder() {
-        return Integer.MIN_VALUE;
-    }
-
-    public void setShowConsoleLog(boolean showConsoleLog) {
-        this.showConsoleLog = showConsoleLog;
-    }
-
-    public void setFormatConsoleLogJson(boolean formatConsoleLogJson) {
-        this.formatConsoleLogJson = formatConsoleLogJson;
+        return HIGHEST_PRECEDENCE;
     }
 }

@@ -18,6 +18,7 @@
 package org.minbox.framework.logging.admin.storage;
 
 
+import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
@@ -38,13 +39,24 @@ import java.util.List;
  */
 public interface LoggingStorage {
     /**
+     * Insert Global Log
+     *
+     * @param requestLogId request log id
+     * @param log          {@link GlobalLog}
+     * @return the global log id
+     * @throws SQLException Sql Exception
+     */
+    String insertGlobalLog(String requestLogId, GlobalLog log) throws SQLException;
+
+    /**
      * Insert ApiBootLogs To DataBase
      *
      * @param serviceDetailId ServiceDetail ID
      * @param log             MinBoxLog
+     * @return request log id
      * @throws SQLException Sql Exception
      */
-    void insertLog(String serviceDetailId, MinBoxLog log) throws SQLException;
+    String insertLog(String serviceDetailId, MinBoxLog log) throws SQLException;
 
     /**
      * Insert ServiceDetail To DataBase

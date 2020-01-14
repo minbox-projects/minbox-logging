@@ -17,11 +17,13 @@
 
 package org.minbox.framework.logging.admin.listener;
 
+import org.minbox.framework.logging.admin.LoggingAdminFactoryBean;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.admin.storage.LoggingStorage;
-import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.LoggingClientNotice;
+import org.minbox.framework.logging.core.MinBoxLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -30,6 +32,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -46,6 +50,10 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ReportLogStorageListener implements SmartApplicationListener {
     /**
+     * The bean name of {@link ReportLogStorageListener}
+     */
+    public static final String BEAN_NAME = "reportLogStorageListener";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(ReportLogStorageListener.class);
@@ -54,12 +62,14 @@ public class ReportLogStorageListener implements SmartApplicationListener {
      */
     ConcurrentMap<String, String> SERVICE_DETAIL_IDS = new ConcurrentHashMap();
     /**
-     * ApiBoot Logging Storage
+     * Logging Storage Interface
+     * {@link LoggingStorage}
      */
     private LoggingStorage loggingStorage;
 
-    public ReportLogStorageListener(LoggingStorage loggingStorage) {
-        this.loggingStorage = loggingStorage;
+    public ReportLogStorageListener(LoggingAdminFactoryBean adminFactoryBean) {
+        Assert.notNull(adminFactoryBean, "[LoggingAdminFactoryBean] Can't be null.");
+        this.loggingStorage = adminFactoryBean.getLoggingStorage();
     }
 
     /**
@@ -94,7 +104,9 @@ public class ReportLogStorageListener implements SmartApplicationListener {
             // save logs
             if (!ObjectUtils.isEmpty(notice.getLoggers())) {
                 for (MinBoxLog log : notice.getLoggers()) {
-                    loggingStorage.insertLog(serviceDetailId, log);
+                    String requestLogId = loggingStorage.insertLog(serviceDetailId, log);
+                    // save global logs
+                    saveGlobalLogs(requestLogId, log.getGlobalLogs());
                 }
             }
 
@@ -105,6 +117,25 @@ public class ReportLogStorageListener implements SmartApplicationListener {
             logger.error(e.getMessage(), e);
         } finally {
             logger.debug("Storage Report Request Logs Complete.");
+        }
+    }
+
+    /**
+     * Save the global log contained in each request log
+     *
+     * @param requestLogId request log id
+     * @param globalLogs   {@link GlobalLog}
+     */
+    private void saveGlobalLogs(String requestLogId, List<GlobalLog> globalLogs) {
+        if (!ObjectUtils.isEmpty(globalLogs) && !ObjectUtils.isEmpty(requestLogId)) {
+            globalLogs.forEach(globalLog -> {
+                try {
+                    loggingStorage.insertGlobalLog(requestLogId, globalLog);
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+
         }
     }
 

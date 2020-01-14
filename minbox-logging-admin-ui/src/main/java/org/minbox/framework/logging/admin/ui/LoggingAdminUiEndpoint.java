@@ -17,10 +17,9 @@
 
 package org.minbox.framework.logging.admin.ui;
 
-import lombok.Builder;
-import lombok.Data;
-import org.minbox.framework.logging.admin.endpoint.Endpoint;
+import org.minbox.framework.logging.admin.LoggingAdminFactoryBean;
 import org.minbox.framework.logging.admin.storage.LoggingStorage;
+import org.minbox.framework.logging.core.annotation.Endpoint;
 import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
 import org.slf4j.Logger;
@@ -56,22 +55,25 @@ import static java.util.Collections.singletonMap;
 @Endpoint
 public class LoggingAdminUiEndpoint {
     /**
+     * The bean name of {@link LoggingAdminUiEndpoint}
+     */
+    public static final String BEAN_NAME = "loggingAdminUiEndpoint";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingAdminUiEndpoint.class);
     /**
-     * Logging Admin Ui Settings
+     * LoggingAdmin FactoryBean{@link LoggingAdminFactoryBean}
      */
-    private Settings uiSetting;
+    private LoggingAdminFactoryBean adminFactoryBean;
     /**
-     * Logging Data Storage
-     * Used to query log information
+     * {@link LoggingStorage} implement class instance
      */
     private LoggingStorage loggingStorage;
 
-    public LoggingAdminUiEndpoint(Settings uiSetting, LoggingStorage loggingStorage) {
-        this.uiSetting = uiSetting;
-        this.loggingStorage = loggingStorage;
+    public LoggingAdminUiEndpoint(LoggingAdminFactoryBean adminFactoryBean) {
+        this.adminFactoryBean = adminFactoryBean;
+        this.loggingStorage = adminFactoryBean.getLoggingStorage();
     }
 
     /**
@@ -172,35 +174,7 @@ public class LoggingAdminUiEndpoint {
     }
 
     @ModelAttribute(value = "uiSettings", binding = false)
-    public Settings getUiSettings() {
-        return this.uiSetting;
-    }
-
-    /**
-     * Logging Admin Ui Settings
-     */
-    @Data
-    @Builder
-    public static class Settings {
-        /**
-         * page title
-         */
-        private final String title;
-        /**
-         * logo
-         */
-        private final String brand;
-        /**
-         * notification filter enable
-         */
-        private final boolean notificationFilterEnabled;
-        /**
-         * remember me enabled
-         */
-        private final boolean rememberMeEnabled;
-        /**
-         * page routes
-         */
-        private final List<String> routes;
+    public LoggingAdminFactoryBean.AdminUiSetting getUiSettings() {
+        return this.adminFactoryBean.getAdminUiSetting();
     }
 }
