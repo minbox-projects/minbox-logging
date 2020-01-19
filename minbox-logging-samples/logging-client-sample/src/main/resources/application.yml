@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: logging-client-sample
+server:
+  port: 8080
