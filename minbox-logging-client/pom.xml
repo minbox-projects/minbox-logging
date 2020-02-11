@@ -10,7 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>minbox-logging-client</artifactId>
-
+    <properties>
+        <transmittable-thread-local.version>2.11.4</transmittable-thread-local.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.minbox.framework</groupId>
@@ -30,6 +32,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>${transmittable-thread-local.version}</version>
         </dependency>
     </dependencies>
 </project>
