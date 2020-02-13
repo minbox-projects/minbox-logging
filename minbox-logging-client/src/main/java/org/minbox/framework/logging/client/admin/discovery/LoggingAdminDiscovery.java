@@ -24,13 +24,7 @@ import org.minbox.framework.logging.client.MinBoxLoggingException;
  * 1. single api-boot-logging-admin service
  * 2. pull api-boot-logging-admin services from registry center
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-19 15:29
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 public interface LoggingAdminDiscovery {
     /**

@@ -23,12 +23,6 @@ import lombok.Getter;
  * Report Request Log To Admin Away
  *
  * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-23 14:52
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
  */
 @Getter
 public enum ReportAway {

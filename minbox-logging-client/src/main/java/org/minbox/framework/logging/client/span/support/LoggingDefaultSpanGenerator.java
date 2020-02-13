@@ -20,6 +20,7 @@ package org.minbox.framework.logging.client.span.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.client.span.LoggingSpanGenerator;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 import java.util.UUID;
 
@@ -27,19 +28,14 @@ import java.util.UUID;
  * ApiBoot Logging Default Span
  * Use By Create New SpanId
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-15 17:24
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 public class LoggingDefaultSpanGenerator implements LoggingSpanGenerator {
     /**
      * Create New SpanId
+     * Use random uuid as default spanId
      *
-     * @return SpanId
+     * @return {@link MinBoxLog#getSpanId()}
      * @throws MinBoxLoggingException Exception
      */
     @Override

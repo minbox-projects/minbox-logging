@@ -37,13 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Receive Log report
  * Provide log analysis
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-19 09:50
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 @Endpoint
 public class LoggingEndpoint implements ApplicationContextAware {

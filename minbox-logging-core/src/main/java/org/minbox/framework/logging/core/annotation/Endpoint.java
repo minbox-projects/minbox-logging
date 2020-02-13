@@ -25,13 +25,7 @@ import java.lang.annotation.*;
  * ApiBoot Logging Endpoint Annotation
  * Only classes with this annotation will be scanned
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-19 09:55
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

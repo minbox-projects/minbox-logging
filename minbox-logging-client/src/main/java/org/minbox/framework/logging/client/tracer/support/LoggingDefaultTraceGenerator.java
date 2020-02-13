@@ -19,25 +19,20 @@ package org.minbox.framework.logging.client.tracer.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.client.tracer.LoggingTraceGenerator;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 import java.util.UUID;
 
 /**
- * ApiBoot Logging Tracer Default Support Instance
+ * The default support of {@link LoggingTraceGenerator}
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-10 17:28
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 public class LoggingDefaultTraceGenerator implements LoggingTraceGenerator {
     /**
      * Use UUID as the default traceId
      *
-     * @return traceId
+     * @return {@link MinBoxLog#getTraceId()}
      * @throws MinBoxLoggingException Exception
      */
     @Override

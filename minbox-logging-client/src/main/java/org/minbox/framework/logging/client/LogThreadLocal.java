@@ -23,18 +23,15 @@ import org.minbox.framework.logging.core.MinBoxLog;
 /**
  * Using threadLocal to store log objects in multithreaded situations
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-15 16:41
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 public class LogThreadLocal {
     /**
      * The Request Logs
+     * Solve the problem of the {@link MinBoxLog} object of the child parent thread
+     * https://gitee.com/minbox-projects/minbox-logging/issues/I11QKJ
      *
+     * @see TransmittableThreadLocal
      * @see MinBoxLog
      */
     private static final TransmittableThreadLocal<MinBoxLog> LOGS = new TransmittableThreadLocal<>();

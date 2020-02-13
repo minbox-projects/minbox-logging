@@ -25,18 +25,12 @@ import java.sql.Timestamp;
 /**
  * Logging Response Api Entity
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-08-06 16:36
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 @Data
 public class LoggingResponse extends MinBoxLog {
     /**
-     * create time
+     * The request logs create time
      */
     private Timestamp createTime;
     /**

@@ -18,24 +18,19 @@
 package org.minbox.framework.logging.client.tracer;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 /**
  * ApiBoot Logging Tracer
  * Create new traceId
  *
- * @author：恒宇少年 - 于起宇
- * <p>
- * DateTime：2019-07-10 17:01
- * Blog：http://blog.yuqiyu.com
- * WebSite：http://www.jianshu.com/u/092df3f77bca
- * Gitee：https://gitee.com/hengboy
- * GitHub：https://github.com/hengboy
+ * @author 恒宇少年
  */
 public interface LoggingTraceGenerator {
     /**
-     * create new traceId
+     * Create new traceId
      *
-     * @return traceId
+     * @return The Trace ID of http request {@link MinBoxLog#getTraceId()}
      * @throws MinBoxLoggingException exception
      */
     String createTraceId() throws MinBoxLoggingException;
