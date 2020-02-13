@@ -84,6 +84,15 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>aliyun</id>
+            <name>AliYun Maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
     </repositories>
     <build>
         <plugins>
