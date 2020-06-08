@@ -14,10 +14,12 @@
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-logging-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-logging-admin</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,11 +39,27 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.minbox.framework</groupId>
+                <artifactId>command-execute-maven-plugin</artifactId>
+                <version>0.2.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>npm build</id>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm run build</executable>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
-                    <!--<execution>
+                    &lt;!&ndash;<execution>
                         <id>npm-install</id>
                         <phase>validate</phase>
                         <goals>
@@ -53,7 +71,7 @@
                                 <argument>ci</argument>
                             </arguments>
                         </configuration>
-                    </execution>-->
+                    </execution>&ndash;&gt;
                     <execution>
                         <id>npm-build</id>
                         <phase>generate-resources</phase>
@@ -73,7 +91,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
         <!--Resource Directory Config-->
         <resources>

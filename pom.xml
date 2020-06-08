@@ -22,8 +22,8 @@
         <module>minbox-logging-samples</module>
     </modules>
     <properties>
-        <revision>1.0.4.RELEASE</revision>
-        <minbox.version>1.0.3.RELEASE</minbox.version>
+        <revision>1.0.5-SNAPSHOT</revision>
+        <minbox.version>1.0.5-SNAPSHOT</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
