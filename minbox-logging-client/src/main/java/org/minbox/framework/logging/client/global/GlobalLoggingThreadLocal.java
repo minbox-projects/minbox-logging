@@ -1,5 +1,6 @@
 package org.minbox.framework.logging.client.global;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import org.minbox.framework.logging.core.GlobalLog;
 import org.springframework.util.ObjectUtils;
 
@@ -15,7 +16,7 @@ public class GlobalLoggingThreadLocal {
     /**
      * GlobalLog {@link ThreadLocal} define
      */
-    private static final ThreadLocal<List<GlobalLog>> GLOBAL_LOGS = new ThreadLocal();
+    private static final TransmittableThreadLocal<List<GlobalLog>> GLOBAL_LOGS = new TransmittableThreadLocal();
 
     /**
      * Get {@link GlobalLog} List from ThreadLocal

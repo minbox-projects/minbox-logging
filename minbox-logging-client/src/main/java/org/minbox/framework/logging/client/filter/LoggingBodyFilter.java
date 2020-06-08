@@ -19,6 +19,7 @@ package org.minbox.framework.logging.client.filter;
 
 import org.minbox.framework.web.request.RequestWrapper;
 import org.minbox.framework.web.response.ResponseWrapper;
+import org.minbox.framework.web.util.HttpRequestUtil;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -52,9 +53,14 @@ public class LoggingBodyFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        RequestWrapper requestWrapper = new RequestWrapper((HttpServletRequest) request);
-        ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
-        filterChain.doFilter(requestWrapper, responseWrapper);
-        responseWrapper.flushBuffer();
+        // see https://gitee.com/minbox-projects/minbox-logging/issues/I1JWSK
+        if (!HttpRequestUtil.isMultipart(request)) {
+            RequestWrapper requestWrapper = new RequestWrapper((HttpServletRequest) request);
+            ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
+            filterChain.doFilter(requestWrapper, responseWrapper);
+            responseWrapper.flushBuffer();
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 }

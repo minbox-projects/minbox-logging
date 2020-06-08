@@ -89,7 +89,10 @@ public class LoggingWebInterceptor
             log.setRequestUri(HttpRequestUtil.getUri(request));
             log.setRequestMethod(request.getMethod());
             log.setRequestParam(JSON.toJSONString(HttpRequestUtil.getPathParams(request)));
-            log.setRequestBody(HttpRequestUtil.getRequestBody(request));
+            // see https://gitee.com/minbox-projects/minbox-logging/issues/I1JWSK
+            if (!HttpRequestUtil.isMultipart(request)) {
+                log.setRequestBody(HttpRequestUtil.getRequestBody(request));
+            }
             log.setRequestHeaders(HttpRequestUtil.getRequestHeaders(request));
             log.setHttpStatus(response.getStatus());
             log.setStartTime(System.currentTimeMillis());
