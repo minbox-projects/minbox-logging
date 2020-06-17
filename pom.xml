@@ -23,7 +23,7 @@
         <module>minbox-logging-dependencies</module>
     </modules>
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
+        <revision>1.0.5.RELEASE</revision>
         <minbox.version>1.0.5.RELEASE</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <flatten-maven-plugin.version>1.2.3</flatten-maven-plugin.version>
