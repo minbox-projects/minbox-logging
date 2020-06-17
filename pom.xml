@@ -20,11 +20,13 @@
         <module>minbox-logging-core</module>
         <module>minbox-logging-spring-context</module>
         <module>minbox-logging-samples</module>
+        <module>minbox-logging-dependencies</module>
     </modules>
     <properties>
         <revision>1.0.5-SNAPSHOT</revision>
-        <minbox.version>1.0.5-SNAPSHOT</minbox.version>
+        <minbox.version>1.0.5.RELEASE</minbox.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.2.3</flatten-maven-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -109,7 +111,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.1.0</version>
+                <version>${flatten-maven-plugin.version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
