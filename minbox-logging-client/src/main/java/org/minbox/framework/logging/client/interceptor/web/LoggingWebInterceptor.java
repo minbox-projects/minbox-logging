@@ -37,6 +37,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
+import java.util.List;
 
 /**
  * ApiBoot Logging SpringBoot Web Interceptor
@@ -80,7 +81,8 @@ public class LoggingWebInterceptor
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // check is matcher ignore url
-        if (checkIgnore(HttpRequestUtil.getUri(request))) {
+        // check is matcher ignore httpStatus
+        if (checkIgnore(HttpRequestUtil.getUri(request)) || checkIgnoreHttpStatus(response.getStatus())) {
             return true;
         }
         MinBoxLog log = new MinBoxLog();
@@ -130,14 +132,17 @@ public class LoggingWebInterceptor
         try {
             // Get Current Thread ApiBoot Log Instance
             MinBoxLog log = LogThreadLocal.get();
-            if (!ObjectUtils.isEmpty(log)) {
-                // set exception stack
-                if (!ObjectUtils.isEmpty(ex)) {
-                    logger.debug("Request Have Exception，Execute Update HttpStatus.");
-                    log.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    log.setExceptionStack(StackTraceUtil.getStackTrace(ex));
-                }
-                log.setHttpStatus(response.getStatus());
+            if (ObjectUtils.isEmpty(log) || this.checkIgnore(HttpRequestUtil.getUri(request))) {
+                return;
+            }
+            log.setHttpStatus(response.getStatus());
+            // set exception stack
+            if (!ObjectUtils.isEmpty(ex)) {
+                logger.debug("Request Have Exception，Execute Update HttpStatus.");
+                log.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                log.setExceptionStack(StackTraceUtil.getStackTrace(ex));
+            }
+            if (!this.checkIgnoreHttpStatus(log.getHttpStatus())) {
                 log.setEndTime(System.currentTimeMillis());
                 log.setTimeConsuming(log.getEndTime() - log.getStartTime());
                 log.setResponseHeaders(HttpRequestUtil.getResponseHeaders(response));
@@ -209,5 +214,17 @@ public class LoggingWebInterceptor
      */
     private boolean checkIgnore(String uri) {
         return UrlUtils.isIgnore(factoryBean.getIgnorePaths(), uri);
+    }
+
+    /**
+     * Check whether to filter the request of the specified {@link HttpStatus}
+     *
+     * @param httpStatusCode {@link HttpServletResponse#getStatus()}
+     * @return
+     */
+    private boolean checkIgnoreHttpStatus(int httpStatusCode) {
+        HttpStatus httpStatus = HttpStatus.valueOf(httpStatusCode);
+        List<HttpStatus> ignoreHttpStatus = factoryBean.getIgnoreHttpStatus();
+        return ignoreHttpStatus.contains(httpStatus);
     }
 }

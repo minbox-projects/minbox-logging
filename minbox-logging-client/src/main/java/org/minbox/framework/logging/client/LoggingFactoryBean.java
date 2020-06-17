@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -108,6 +109,16 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, A
     private List<String> ignorePaths = new ArrayList() {{
         add("/error");
     }};
+    /**
+     * Ignore the {@link HttpStatus} of not logging
+     * <p>
+     * Ignore 404 by default
+     */
+    private List<HttpStatus> ignoreHttpStatus = new ArrayList() {
+        {
+            add(HttpStatus.NOT_FOUND);
+        }
+    };
     /**
      * Service ID
      * Affected by "spring.application.name" config properties
@@ -294,5 +305,13 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, A
 
     public void setFormatConsoleLog(boolean formatConsoleLog) {
         this.formatConsoleLog = formatConsoleLog;
+    }
+
+    public void setIgnoreHttpStatus(List<HttpStatus> ignoreHttpStatus) {
+        this.ignoreHttpStatus = ignoreHttpStatus;
+    }
+
+    public List<HttpStatus> getIgnoreHttpStatus() {
+        return ignoreHttpStatus;
     }
 }
