@@ -30,7 +30,7 @@
 
 ## 链路日志分析图
 
-![](http://apiboot.minbox.io/img/logging/minbox-logging-trace.png)
+![](https://apiboot.minbox.org/img/logging/minbox-logging-trace.png)
 
 ## 日志客户端
 
@@ -46,13 +46,13 @@
 
 ### 整合Spring Security后的登录界面
 
-![](http://apiboot.minbox.io/img/logging/logging-admin-login.png)
+![](https://apiboot.minbox.org/img/logging/logging-admin-login.png)
 
 可以直接整合`Spring Security`来完成`Basic`安全认证。
 
 ### 上报日志的服务列表
 
-![](http://apiboot.minbox.io/img/logging/logging-admin-service.png)
+![](https://apiboot.minbox.org/img/logging/logging-admin-service.png)
 
 请求日志的采集服务在第一次上报时，会自动创建一条服务记录，服务的唯一性是根据：`服务ID` + `服务IP` + `服务端Port` 来进行定义。
 
@@ -60,13 +60,13 @@
 
 ### 链路日志列表
 
-![](http://apiboot.minbox.io/img/logging/logging-admin-logs.png)
+![](https://apiboot.minbox.org/img/logging/logging-admin-logs.png)
 
 链路日志是我们访问的入口服务生成，比如：`bff-user` -> `user-service`，链路日志产生的位置则是`bff-user`服务，链路日志是接口`请求的入口`也是做出`响应的结束位置`，因此我们可以在页面上查看接口的请求`参数详情`、`头信息`以及`响应的内容`，至于链路日志内的`日志单元`目前界面还未做展示，可以根据`traceId`链路日志编号自行去数据库查询。
 
 ### 链路日志详情
 
-![](http://apiboot.minbox.io/img/logging/logging-admin-log-detail.png)
+![](https://apiboot.minbox.org/img/logging/logging-admin-log-detail.png)
 
 每一个请求的链路日志都会包含上图中的全部字段，从请求开始 -> 响应结束一条链路闭合记录。
 
