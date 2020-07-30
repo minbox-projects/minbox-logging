@@ -24,6 +24,7 @@ import org.minbox.framework.logging.client.LogThreadLocal;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Openfeign Request Interceptor
@@ -40,9 +41,11 @@ public class LoggingOpenFeignInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         MinBoxLog log = LogThreadLocal.get();
-        requestTemplate.header(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
-        requestTemplate.header(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
-        logger.debug("RequestUri：{}, Method：{}，Setting Logging TraceId：{}，SpanId：{} With Openfeign.",
-                requestTemplate.url(), requestTemplate.request().httpMethod().toString(), log.getTraceId(), log.getSpanId());
+        if (!ObjectUtils.isEmpty(log)) {
+            requestTemplate.header(LoggingConstant.HEADER_NAME_TRACE_ID, log.getTraceId());
+            requestTemplate.header(LoggingConstant.HEADER_NAME_PARENT_SPAN_ID, log.getSpanId());
+            logger.debug("RequestUri：{}, Method：{}，Setting Logging TraceId：{}，SpanId：{} With Openfeign.",
+                    requestTemplate.url(), requestTemplate.request().httpMethod().toString(), log.getTraceId(), log.getSpanId());
+        }
     }
 }
