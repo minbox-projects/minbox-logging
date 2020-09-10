@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.minbox.framework</groupId>
-        <version>0.1.0.RELEASE</version>
-        <artifactId>oss-parent</artifactId>
-        <relativePath>../oss-parent</relativePath>
+        <artifactId>minbox-parent</artifactId>
+        <version>1.0.1.RELEASE</version>
+        <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.minbox.framework</groupId>
