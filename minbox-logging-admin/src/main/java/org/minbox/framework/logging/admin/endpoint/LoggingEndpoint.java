@@ -27,6 +27,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,9 +62,10 @@ public class LoggingEndpoint implements ApplicationContextAware {
      * @param notice ApiBoot Logging Client Notice Log Instance
      * @return report status
      */
-    @PostMapping(value = "/logging/report")
+    @PostMapping(value = "/logging/report", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<ReportResponse> report(@RequestBody LoggingClientNotice notice) {
+    public ReportResponse report(@RequestBody LoggingClientNotice notice) {
         // is report success
         boolean reportSuccess = true;
         try {
@@ -76,7 +78,7 @@ public class LoggingEndpoint implements ApplicationContextAware {
         }
         ReportResponse response = new ReportResponse();
         response.setStatus(reportSuccess ? ReportResponse.SUCCESS : ReportResponse.ERROR);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return response;
     }
 
     @Override

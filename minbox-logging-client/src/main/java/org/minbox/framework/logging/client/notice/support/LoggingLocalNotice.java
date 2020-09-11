@@ -1,10 +1,9 @@
 package org.minbox.framework.logging.client.notice.support;
 
-import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.client.LoggingFactoryBean;
 import org.minbox.framework.logging.client.notice.LoggingNotice;
 import org.minbox.framework.logging.core.MinBoxLog;
-import org.minbox.framework.util.JsonUtil;
+import org.minbox.framework.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ public class LoggingLocalNotice implements LoggingNotice {
     public void notice(MinBoxLog minBoxLog) {
         if (loggingFactoryBean.isShowConsoleLog()) {
             logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(),
-                    loggingFactoryBean.isFormatConsoleLog() ? JsonUtil.beautifyJson(minBoxLog) : JSON.toJSONString(minBoxLog));
+                    loggingFactoryBean.isFormatConsoleLog() ? JsonUtils.beautifyJson(minBoxLog) : JsonUtils.toJsonString(minBoxLog));
         }
     }
 
