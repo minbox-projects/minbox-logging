@@ -15,31 +15,28 @@
  *
  */
 
-package org.minbox.framework.logging.client.span.support;
-
+package org.minbox.framework.logging.client.tracer.support;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
-import org.minbox.framework.logging.client.span.LoggingSpanGenerator;
+import org.minbox.framework.logging.client.tracer.LogTraceIdGenerator;
 import org.minbox.framework.logging.core.MinBoxLog;
 
 import java.util.UUID;
 
 /**
- * ApiBoot Logging Default Span
- * Use By Create New SpanId
+ * The default support of {@link LogTraceIdGenerator}
  *
  * @author 恒宇少年
  */
-public class LoggingDefaultSpanGenerator implements LoggingSpanGenerator {
+public class DefaultLogTraceIdGenerator implements LogTraceIdGenerator {
     /**
-     * Create New SpanId
-     * Use random uuid as default spanId
+     * Use UUID as the default traceId
      *
-     * @return {@link MinBoxLog#getSpanId()}
+     * @return {@link MinBoxLog#getTraceId()}
      * @throws MinBoxLoggingException Exception
      */
     @Override
-    public String createSpanId() throws MinBoxLoggingException {
+    public String createTraceId() throws MinBoxLoggingException {
         return UUID.randomUUID().toString();
     }
 }

@@ -15,23 +15,24 @@
  *
  */
 
-package org.minbox.framework.logging.client.span;
-
+package org.minbox.framework.logging.client.tracer;
 
 import org.minbox.framework.logging.client.MinBoxLoggingException;
+import org.minbox.framework.logging.core.MinBoxLog;
 
 /**
- * ApiBoot Logging Span
- * Create new spanId
+ * ApiBoot Logging Tracer
+ * Create new traceId
  *
  * @author 恒宇少年
  */
-public interface LoggingSpanGenerator {
+public interface LogTraceIdGenerator {
     /**
-     * create new spanId
+     * Create new traceId
      *
-     * @return span id
+     * @return The Trace ID of http request {@link MinBoxLog#getTraceId()}
      * @throws MinBoxLoggingException exception
      */
-    String createSpanId() throws MinBoxLoggingException;
+    String createTraceId() throws MinBoxLoggingException;
+
 }
