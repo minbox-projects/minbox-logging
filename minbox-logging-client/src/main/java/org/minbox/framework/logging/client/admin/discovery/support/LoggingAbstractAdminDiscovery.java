@@ -17,8 +17,9 @@
 
 package org.minbox.framework.logging.client.admin.discovery.support;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.minbox.framework.logging.client.admin.discovery.LoggingAdminDiscovery;
+
+import java.util.Base64;
 
 /**
  * ApiBoot Logging Abstract Admin Discovery
@@ -27,18 +28,12 @@ import org.minbox.framework.logging.client.admin.discovery.LoggingAdminDiscovery
  */
 public abstract class LoggingAbstractAdminDiscovery implements LoggingAdminDiscovery {
     /**
-     * basic auth
-     */
-    private static final String BASIC_AUTH = "Basic %s";
-
-    /**
      * get basic auth base64 string
      *
      * @param basicInfo basic info
      * @return basic auth base64 string
      */
     protected String getBasicBase64(String basicInfo) {
-        String basicBase64 = Base64.encodeBase64String(basicInfo.getBytes());
-        return String.format(BASIC_AUTH, basicBase64);
+        return Base64.getEncoder().encodeToString(basicInfo.getBytes());
     }
 }
