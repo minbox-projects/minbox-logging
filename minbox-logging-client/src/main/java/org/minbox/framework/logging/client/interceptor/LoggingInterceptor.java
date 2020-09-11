@@ -1,5 +1,8 @@
 package org.minbox.framework.logging.client.interceptor;
 
+import org.minbox.framework.logging.client.span.LogSpanIdGenerator;
+import org.minbox.framework.logging.client.tracer.LogTraceIdGenerator;
+
 /**
  * MinBox logging interceptor
  *
@@ -8,7 +11,7 @@ package org.minbox.framework.logging.client.interceptor;
 public interface LoggingInterceptor {
     /**
      * create new traceId
-     * {@link org.minbox.framework.logging.client.tracer.LoggingTraceGenerator}
+     * {@link LogTraceIdGenerator}
      *
      * @return traceId
      */
@@ -16,7 +19,7 @@ public interface LoggingInterceptor {
 
     /**
      * create new spanId
-     * {@link org.minbox.framework.logging.client.span.LoggingSpanGenerator}
+     * {@link LogSpanIdGenerator}
      *
      * @return spanId
      */

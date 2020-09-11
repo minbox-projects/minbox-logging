@@ -41,6 +41,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.minbox.framework</groupId>
+            <artifactId>minbox-sequence</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
             <version>${transmittable-thread-local.version}</version>

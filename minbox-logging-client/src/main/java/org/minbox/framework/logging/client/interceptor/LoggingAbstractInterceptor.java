@@ -1,6 +1,10 @@
 package org.minbox.framework.logging.client.interceptor;
 
 import org.minbox.framework.logging.client.LoggingFactoryBean;
+import org.minbox.framework.logging.client.span.LogSpanIdGenerator;
+import org.minbox.framework.logging.client.span.support.DefaultLogSpanIdGenerator;
+import org.minbox.framework.logging.client.tracer.LogTraceIdGenerator;
+import org.minbox.framework.logging.client.tracer.support.DefaultLogTraceIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +33,10 @@ public class LoggingAbstractInterceptor implements LoggingInterceptor {
     }
 
     /**
-     * create new traceId {@link org.minbox.framework.logging.client.tracer.LoggingTraceGenerator}
+     * create new traceId {@link LogTraceIdGenerator}
      *
      * @return traceId
-     * @see org.minbox.framework.logging.client.tracer.support.LoggingDefaultTraceGenerator
+     * @see DefaultLogTraceIdGenerator
      */
     @Override
     public String createTraceId() {
@@ -40,10 +44,10 @@ public class LoggingAbstractInterceptor implements LoggingInterceptor {
     }
 
     /**
-     * create new spanId {@link org.minbox.framework.logging.client.span.LoggingSpanGenerator}
+     * create new spanId {@link LogSpanIdGenerator}
      *
      * @return spanId
-     * @see org.minbox.framework.logging.client.span.support.LoggingDefaultSpanGenerator
+     * @see DefaultLogSpanIdGenerator
      */
     @Override
     public String createSpanId() {

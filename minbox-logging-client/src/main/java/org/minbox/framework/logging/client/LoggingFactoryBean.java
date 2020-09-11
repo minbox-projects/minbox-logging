@@ -6,10 +6,12 @@ import org.minbox.framework.logging.client.admin.report.support.LoggingAdminRepo
 import org.minbox.framework.logging.client.cache.LoggingCache;
 import org.minbox.framework.logging.client.cache.support.LoggingMemoryCache;
 import org.minbox.framework.logging.client.http.rest.LoggingRestTemplateInterceptor;
-import org.minbox.framework.logging.client.span.LoggingSpanGenerator;
-import org.minbox.framework.logging.client.span.support.LoggingDefaultSpanGenerator;
-import org.minbox.framework.logging.client.tracer.LoggingTraceGenerator;
-import org.minbox.framework.logging.client.tracer.support.LoggingDefaultTraceGenerator;
+import org.minbox.framework.logging.client.span.LogSpanIdGenerator;
+import org.minbox.framework.logging.client.span.support.DefaultLogSpanIdGenerator;
+import org.minbox.framework.logging.client.span.support.MinBoxSequenceLogSpanIdGenerator;
+import org.minbox.framework.logging.client.tracer.LogTraceIdGenerator;
+import org.minbox.framework.logging.client.tracer.support.DefaultLogTraceIdGenerator;
+import org.minbox.framework.logging.client.tracer.support.MinBoxSequenceLogTraceIdGenerator;
 import org.minbox.framework.logging.core.ReportAway;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -52,17 +54,17 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, A
      * logging tracer generator away
      * default is uuid
      * Create a unique number for each request link
-     * {@link LoggingDefaultTraceGenerator}
+     * {@link DefaultLogTraceIdGenerator}
      */
-    private LoggingTraceGenerator traceGenerator;
+    private LogTraceIdGenerator traceGenerator;
 
     /**
      * logging span id generator away
      * default is uuid
      * Unique number for each request unit created
-     * {@link LoggingSpanGenerator}
+     * {@link LogSpanIdGenerator}
      */
-    private LoggingSpanGenerator spanGenerator;
+    private LogSpanIdGenerator spanGenerator;
     /**
      * Logging Cache
      * {@link org.minbox.framework.logging.client.cache.support.LoggingMemoryCache}
@@ -144,13 +146,13 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, A
 
     /**
      * Examples of classes required for initialization of constructors
-     * {@link LoggingDefaultTraceGenerator}
-     * {@link LoggingDefaultSpanGenerator}
+     * {@link DefaultLogTraceIdGenerator}
+     * {@link DefaultLogSpanIdGenerator}
      * {@link LoggingMemoryCache}
      */
     public LoggingFactoryBean() {
-        this.traceGenerator = new LoggingDefaultTraceGenerator();
-        this.spanGenerator = new LoggingDefaultSpanGenerator();
+        this.traceGenerator = new MinBoxSequenceLogTraceIdGenerator();
+        this.spanGenerator = new MinBoxSequenceLogSpanIdGenerator();
         this.loggingCache = new LoggingMemoryCache();
     }
 
@@ -192,19 +194,19 @@ public class LoggingFactoryBean implements EnvironmentAware, InitializingBean, A
         return applicationContext;
     }
 
-    public LoggingTraceGenerator getTraceGenerator() {
+    public LogTraceIdGenerator getTraceGenerator() {
         return traceGenerator;
     }
 
-    public void setTraceGenerator(LoggingTraceGenerator traceGenerator) {
+    public void setTraceGenerator(LogTraceIdGenerator traceGenerator) {
         this.traceGenerator = traceGenerator;
     }
 
-    public LoggingSpanGenerator getSpanGenerator() {
+    public LogSpanIdGenerator getSpanGenerator() {
         return spanGenerator;
     }
 
-    public void setSpanGenerator(LoggingSpanGenerator spanGenerator) {
+    public void setSpanGenerator(LogSpanIdGenerator spanGenerator) {
         this.spanGenerator = spanGenerator;
     }
 
