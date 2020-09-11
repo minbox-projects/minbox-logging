@@ -1,26 +1,10 @@
 # MinBox Logging
-
-<p align="left">
-   <a href="https://www.travis-ci.org/minbox-projects/minbox-logging">
-     <img src="https://www.travis-ci.org/minbox-projects/minbox-logging.svg?branch=master" alt"travis">
-  </a>  
-   <a href="https://codecov.io/gh/minbox-projects/minbox-logging">
-     <img src="https://codecov.io/gh/minbox-projects/minbox-logging/branch/master/graph/badge.svg" alt"Codecov">
-  </a>
-   <a href="https://gitter.im/api-boot/minbox-logging?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-     <img src="https://badges.gitter.im/api-boot/minbox-logging.svg" alt"Gitter">
-  </a>
-    <a href="https://search.maven.org/search?q=a:minbox-logging">
-        <img src="https://img.shields.io/maven-central/v/org.minbox.framework/minbox-logging.svg?label=Maven%20Central" alt="Maven Center">
-    </a>
-    <a href="https://github.com/weibocom/motan/blob/master/LICENSE">
-        <img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="Apache License">
-    </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="JDK Version">
-  </a>
-</p>
-
+![Ci Builder](https://github.com/minbox-projects/minbox-logging/workflows/Ci%20Builder/badge.svg?branch=master)
+![](https://codecov.io/gh/minbox-projects/minbox-logging/branch/master/graph/badge.svg)
+![](https://tokei.rs/b1/github/minbox-projects/minbox-logging?category=lines)
+![](https://img.shields.io/maven-central/v/org.minbox.framework/minbox-logging.svg?label=Maven%20Central)
+![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
+![](https://img.shields.io/badge/JDK-1.8+-blue.svg)
 
 `MinBox Logging`是一款分布式、零侵入式的链路日志分析框架，支持`SpringCloud`微服务架构下配置使用，内部封装了`RestTemplate`、`OpenFeign`两种方式透传链路信息。
 
