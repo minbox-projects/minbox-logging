@@ -17,11 +17,11 @@
 
 package org.minbox.framework.logging.admin.storage;
 
-import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
+import org.minbox.framework.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,12 +140,12 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.setLong(7, log.getEndTime());
         ps.setInt(8, log.getHttpStatus());
         ps.setString(9, log.getRequestBody());
-        ps.setString(10, JSON.toJSONString(log.getRequestHeaders()));
+        ps.setString(10, JsonUtils.toJsonString(log.getRequestHeaders()));
         ps.setString(11, log.getRequestIp());
         ps.setString(12, log.getRequestMethod());
         ps.setString(13, log.getRequestUri());
         ps.setString(14, log.getResponseBody());
-        ps.setString(15, JSON.toJSONString(log.getResponseHeaders()));
+        ps.setString(15, JsonUtils.toJsonString(log.getResponseHeaders()));
         ps.setLong(16, log.getTimeConsuming());
         ps.setString(17, log.getRequestParam());
         ps.setString(18, log.getExceptionStack());

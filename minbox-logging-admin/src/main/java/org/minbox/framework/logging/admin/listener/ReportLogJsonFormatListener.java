@@ -17,12 +17,11 @@
 
 package org.minbox.framework.logging.admin.listener;
 
-import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.admin.LoggingAdminFactoryBean;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.event.ReportLogEvent;
 import org.minbox.framework.logging.core.LoggingClientNotice;
-import org.minbox.framework.util.JsonUtil;
+import org.minbox.framework.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -64,7 +63,8 @@ public class ReportLogJsonFormatListener implements SmartApplicationListener {
                 LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
                 String serviceInfo = String.format("%s -> %s", notice.getClientServiceId(), notice.getClientServiceIp());
                 logger.info("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo,
-                        loggingAdminFactoryBean.isFormatConsoleLogJson() ? JsonUtil.beautifyJson(notice.getLoggers()) : JSON.toJSONString(notice.getLoggers()));
+                        loggingAdminFactoryBean.isFormatConsoleLogJson() ? JsonUtils.beautifyJson(notice.getLoggers()) :
+                                JsonUtils.toJsonString(notice.getLoggers()));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -17,7 +17,6 @@
 
 package org.minbox.framework.logging.client.interceptor.web;
 
-import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.client.LogThreadLocal;
 import org.minbox.framework.logging.client.LoggingConstant;
 import org.minbox.framework.logging.client.LoggingFactoryBean;
@@ -25,6 +24,7 @@ import org.minbox.framework.logging.client.global.GlobalLoggingThreadLocal;
 import org.minbox.framework.logging.client.interceptor.LoggingAbstractInterceptor;
 import org.minbox.framework.logging.client.notice.LoggingNoticeEvent;
 import org.minbox.framework.logging.core.MinBoxLog;
+import org.minbox.framework.util.JsonUtils;
 import org.minbox.framework.util.StackTraceUtil;
 import org.minbox.framework.util.UrlUtils;
 import org.minbox.framework.web.util.HttpRequestUtil;
@@ -90,7 +90,7 @@ public class LoggingWebInterceptor
             log.setRequestIp(HttpRequestUtil.getIp(request));
             log.setRequestUri(HttpRequestUtil.getUri(request));
             log.setRequestMethod(request.getMethod());
-            log.setRequestParam(JSON.toJSONString(HttpRequestUtil.getPathParams(request)));
+            log.setRequestParam(JsonUtils.toJsonString(HttpRequestUtil.getPathParams(request)));
             // see https://gitee.com/minbox-projects/minbox-logging/issues/I1JWSK
             if (!HttpRequestUtil.isMultipart(request)) {
                 log.setRequestBody(HttpRequestUtil.getRequestBody(request));
