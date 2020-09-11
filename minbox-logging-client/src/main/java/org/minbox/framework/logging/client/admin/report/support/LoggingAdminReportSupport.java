@@ -17,7 +17,6 @@
 
 package org.minbox.framework.logging.client.admin.report.support;
 
-import com.alibaba.fastjson.JSON;
 import org.minbox.framework.logging.client.LoggingFactoryBean;
 import org.minbox.framework.logging.client.MinBoxLoggingException;
 import org.minbox.framework.logging.client.admin.report.LoggingAdminReport;
@@ -25,6 +24,7 @@ import org.minbox.framework.logging.client.cache.LoggingCache;
 import org.minbox.framework.logging.core.LoggingClientNotice;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.response.ReportResponse;
+import org.minbox.framework.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -32,7 +32,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,27 +49,17 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(LoggingAdminReportSupport.class);
-
     /**
      * Report Request Logging Uri
      */
     private static final String REPORT_LOG_URI = "/logging/report";
-    /**
-     * Content-Type HEADER NAME
-     */
-    private static final String HEADER_CONTENT_TYPE = "Content-Type";
-    /**
-     * Authorization HEADER NAME
-     */
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-
-    /**
-     * logging factory bean
-     */
     private LoggingFactoryBean factoryBean;
+    private RestTemplate restTemplate;
 
     public LoggingAdminReportSupport(LoggingFactoryBean factoryBean) {
+        Assert.notNull(factoryBean, "The LoggingFactoryBean cannot be null.");
         this.factoryBean = factoryBean;
+        this.restTemplate = factoryBean.getRestTemplate();
     }
 
     /**
@@ -122,15 +114,14 @@ public class LoggingAdminReportSupport implements LoggingAdminReport, Disposable
                 factoryBean.getServiceId(), factoryBean.getServiceAddress(), factoryBean.getServicePort(), logs);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String basicAuth = factoryBean.getLoggingAdminDiscovery().getBasicAuth();
         if (!ObjectUtils.isEmpty(basicAuth)) {
-            headers.add(HEADER_AUTHORIZATION, basicAuth);
+            headers.setBasicAuth(basicAuth);
         }
-        String noticeJson = JSON.toJSONString(notice);
-        HttpEntity<String> httpEntity = new HttpEntity(noticeJson, headers);
+        HttpEntity<String> request = new HttpEntity(JsonUtils.toJsonString(notice), headers);
         ResponseEntity<ReportResponse> response =
-                factoryBean.getRestTemplate().postForEntity(adminServiceUrl, httpEntity, ReportResponse.class);
+                factoryBean.getRestTemplate().postForEntity(adminServiceUrl, request, ReportResponse.class);
         if (response.getStatusCode().is2xxSuccessful() && response.getBody().getStatus().equals(ReportResponse.SUCCESS)) {
             logger.debug("Report request logging successfully to admin.");
         } else {
