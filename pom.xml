@@ -23,7 +23,7 @@
         <module>minbox-logging-dependencies</module>
     </modules>
     <properties>
-        <revision>1.0.6-SNAPSHOT</revision>
+        <revision>2.0.0-SNAPSHOT</revision>
         <minbox.version>1.0.6-SNAPSHOT</minbox.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jdk.version>1.8</jdk.version>
