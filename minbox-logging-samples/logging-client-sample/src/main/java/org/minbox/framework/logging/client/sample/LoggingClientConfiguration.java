@@ -5,8 +5,8 @@ import org.minbox.framework.logging.client.admin.discovery.support.LoggingAppoin
 import org.minbox.framework.logging.client.global.GlobalLogging;
 import org.minbox.framework.logging.client.global.support.GlobalLoggingMemoryStorage;
 import org.minbox.framework.logging.client.interceptor.web.LoggingWebInterceptor;
-import org.minbox.framework.logging.client.span.LoggingSpanGenerator;
-import org.minbox.framework.logging.client.tracer.LoggingTraceGenerator;
+import org.minbox.framework.logging.client.span.LogSpanIdGenerator;
+import org.minbox.framework.logging.client.tracer.LogTraceIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +53,7 @@ public class LoggingClientConfiguration implements WebMvcConfigurer {
         // 格式化控制台输出的日志
         factoryBean.setFormatConsoleLog(true);
         factoryBean.setLoggingAdminDiscovery(
-                new LoggingAppointAdminDiscovery(new String[]{"user:123456@localhost:9090"})
+                new LoggingAppointAdminDiscovery(new String[]{"user:123456@localhost:9091"})
         );
         return factoryBean;
     }
@@ -61,10 +61,10 @@ public class LoggingClientConfiguration implements WebMvcConfigurer {
     /**
      * 自定义生成traceId
      *
-     * @return {@link LoggingTraceGenerator}
+     * @return {@link LogTraceIdGenerator}
      */
     @Bean
-    public LoggingTraceGenerator customerTraceGenerator() {
+    public LogTraceIdGenerator customerTraceGenerator() {
         return new CustomerTraceIdGenerator();
     }
 
@@ -74,7 +74,7 @@ public class LoggingClientConfiguration implements WebMvcConfigurer {
      * @return
      */
     @Bean
-    public LoggingSpanGenerator customerSpanGenerator() {
+    public LogSpanIdGenerator customerSpanGenerator() {
         return new CustomerSpanIdGenerator();
     }
 
