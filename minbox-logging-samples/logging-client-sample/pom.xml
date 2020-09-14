@@ -13,9 +13,6 @@
         "minbox-logging" 客户端集成使用示例
     </description>
     <artifactId>logging-client-sample</artifactId>
-    <properties>
-        <logging-version>1.0.2.RELEASE</logging-version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -24,12 +21,10 @@
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-logging-client</artifactId>
-            <version>${logging-version}</version>
         </dependency>
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-logging-spring-context</artifactId>
-            <version>${logging-version}</version>
         </dependency>
     </dependencies>
 </project>
