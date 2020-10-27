@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.minbox.framework</groupId>
         <artifactId>minbox-parent</artifactId>
-        <version>1.0.1.RELEASE</version>
+        <version>1.0.3.RELEASE</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -24,7 +24,6 @@
     </modules>
     <properties>
         <revision>1.0.6-SNAPSHOT</revision>
-        <minbox.version>1.0.6-SNAPSHOT</minbox.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,17 +60,6 @@
         </dependency>
 
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.minbox.framework</groupId>
-                <artifactId>minbox-dependencies</artifactId>
-                <version>${minbox.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <repositories>
         <repository>
             <id>aliyun-spring</id>
