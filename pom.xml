@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.minbox.framework</groupId>
         <artifactId>minbox-parent</artifactId>
-        <version>1.0.3.RELEASE</version>
+        <version>1.0.4</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -23,7 +23,9 @@
         <module>minbox-logging-dependencies</module>
     </modules>
     <properties>
-        <revision>1.0.6-SNAPSHOT</revision>
+        <revision>1.0.6</revision>
+        <minbox-bom.version>1.0.4</minbox-bom.version>
+        <spring-boot.version>2.4.0</spring-boot.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,8 +60,18 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.minbox.framework</groupId>
+                <artifactId>minbox-bom</artifactId>
+                <version>${minbox-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <repositories>
         <repository>
             <id>aliyun-spring</id>

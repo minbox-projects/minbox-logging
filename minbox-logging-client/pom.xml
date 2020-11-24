@@ -13,12 +13,18 @@
     <artifactId>minbox-logging-client</artifactId>
     <properties>
         <transmittable-thread-local.version>2.11.5</transmittable-thread-local.version>
+        <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.minbox.framework</groupId>
             <artifactId>minbox-logging-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -38,6 +44,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${spring-cloud-openfeign.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
