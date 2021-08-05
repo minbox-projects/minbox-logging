@@ -39,7 +39,7 @@ public class LoggingLocalNotice implements LoggingNotice {
     @Override
     public void notice(MinBoxLog minBoxLog) {
         if (loggingFactoryBean.isShowConsoleLog()) {
-            logger.info("Request Uri：{}， Logging：\n{}", minBoxLog.getRequestUri(),
+            logger.info("Request Uri: {}, Logging: \n{}", minBoxLog.getRequestUri(),
                     loggingFactoryBean.isFormatConsoleLog() ? JsonUtils.beautifyJson(minBoxLog) : JsonUtils.toJsonString(minBoxLog));
         }
     }
