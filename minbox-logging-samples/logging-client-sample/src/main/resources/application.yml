@@ -1,5 +1,11 @@
 spring:
+  main:
+    allow-circular-references: true
   application:
     name: logging-client-sample
 server:
   port: 8080
+
+logging:
+  level:
+    org.minbox.framework.logging.client: debug

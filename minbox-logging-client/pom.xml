@@ -13,6 +13,7 @@
     <artifactId>minbox-logging-client</artifactId>
     <properties>
         <transmittable-thread-local.version>2.11.5</transmittable-thread-local.version>
+        <openfeign.version>3.1.1</openfeign.version>
     </properties>
     <dependencies>
         <dependency>
@@ -38,6 +39,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${openfeign.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

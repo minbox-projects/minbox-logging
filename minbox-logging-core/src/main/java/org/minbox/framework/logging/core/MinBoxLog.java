@@ -17,11 +17,15 @@
 
 package org.minbox.framework.logging.core;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ApiBoot Log Object
@@ -30,6 +34,18 @@ import java.util.Map;
  */
 @Data
 public class MinBoxLog implements Serializable {
+    /**
+     * The stored service id
+     */
+    private String serviceDetailId;
+    /**
+     * The service application name
+     */
+    private String serviceId;
+    /**
+     * the formatted service name
+     */
+    private String serviceName;
     /**
      * trace id
      */
@@ -79,13 +95,9 @@ public class MinBoxLog implements Serializable {
      */
     private long timeConsuming;
     /**
-     * service id
+     * request headers json value
      */
-    private String serviceId;
-    /**
-     * request headers
-     */
-    private Map<String, String> requestHeaders;
+    private String requestHeader;
     /**
      * request param
      */
@@ -95,9 +107,9 @@ public class MinBoxLog implements Serializable {
      */
     private String requestBody;
     /**
-     * response headers
+     * response headers json value
      */
-    private Map<String, String> responseHeaders;
+    private String responseHeader;
     /**
      * response body
      */
@@ -110,4 +122,10 @@ public class MinBoxLog implements Serializable {
      * Global method log list
      */
     private List<GlobalLog> globalLogs;
+    /**
+     * The request logs create time
+     */
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createTime = LocalDateTime.now();
 }

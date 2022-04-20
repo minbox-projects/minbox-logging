@@ -13,8 +13,8 @@
         <maven.test.skip>true</maven.test.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
-        <api-boot.version>2.3.2-SNAPSHOT</api-boot.version>
+        <spring-boot.version>2.6.6</spring-boot.version>
+        <api-boot.version>2.3.7</api-boot.version>
     </properties>
     <description>
         Logging Client、Logging Admin使用示例

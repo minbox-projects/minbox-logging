@@ -1,8 +1,9 @@
 package org.minbox.framework.logging.core.response;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * logging service response
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
  * @author 恒宇少年
  */
 @Data
+@Accessors(chain = true)
 public class ServiceResponse {
     /**
      * service application name
@@ -27,9 +29,9 @@ public class ServiceResponse {
     /**
      * last report time
      */
-    private Timestamp lastReportTime;
+    private LocalDateTime lastReportTime;
     /**
      * first report time
      */
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 }

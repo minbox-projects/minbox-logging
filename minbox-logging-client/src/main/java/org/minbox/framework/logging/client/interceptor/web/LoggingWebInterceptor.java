@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApiBoot Logging SpringBoot Web Interceptor
@@ -90,12 +91,14 @@ public class LoggingWebInterceptor
             log.setRequestIp(HttpRequestUtil.getIp(request));
             log.setRequestUri(HttpRequestUtil.getUri(request));
             log.setRequestMethod(request.getMethod());
-            log.setRequestParam(JsonUtils.toJsonString(HttpRequestUtil.getPathParams(request)));
+            Map requestParams = HttpRequestUtil.getPathParams(request);
+            log.setRequestParam(!ObjectUtils.isEmpty(requestParams) ? JsonUtils.toJsonString(requestParams) : null);
             // see https://gitee.com/minbox-projects/minbox-logging/issues/I1JWSK
             if (!HttpRequestUtil.isMultipart(request)) {
-                log.setRequestBody(HttpRequestUtil.getRequestBody(request));
+                String requestBody = HttpRequestUtil.getRequestBody(request);
+                log.setRequestBody(!ObjectUtils.isEmpty(requestBody) ? requestBody : null);
             }
-            log.setRequestHeaders(HttpRequestUtil.getRequestHeaders(request));
+            log.setRequestHeader(JsonUtils.toJsonString(HttpRequestUtil.getRequestHeaders(request)));
             log.setHttpStatus(response.getStatus());
             log.setStartTime(System.currentTimeMillis());
             log.setServiceId(factoryBean.getServiceId());
@@ -145,7 +148,8 @@ public class LoggingWebInterceptor
             if (!this.checkIgnoreHttpStatus(log.getHttpStatus())) {
                 log.setEndTime(System.currentTimeMillis());
                 log.setTimeConsuming(log.getEndTime() - log.getStartTime());
-                log.setResponseHeaders(HttpRequestUtil.getResponseHeaders(response));
+                Map responseHeaders = HttpRequestUtil.getResponseHeaders(response);
+                log.setResponseHeader(!ObjectUtils.isEmpty(responseHeaders) ? JsonUtils.toJsonString(responseHeaders) : null);
                 log.setResponseBody(HttpRequestUtil.getResponseBody(response));
                 // set global logs
                 log.setGlobalLogs(GlobalLoggingThreadLocal.getGlobalLogs());

@@ -12,6 +12,10 @@ import java.io.Serializable;
 @Data
 public class GlobalLog implements Serializable {
     /**
+     * The request log id
+     */
+    private String requestLogId;
+    /**
      * Global log level
      * {@link GlobalLogLevel}
      */

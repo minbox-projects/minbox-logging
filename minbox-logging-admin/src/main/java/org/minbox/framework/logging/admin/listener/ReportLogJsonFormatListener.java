@@ -62,7 +62,7 @@ public class ReportLogJsonFormatListener implements SmartApplicationListener {
             if (loggingAdminFactoryBean.isShowConsoleReportLog()) {
                 LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
                 String serviceInfo = String.format("%s -> %s", notice.getClientServiceId(), notice.getClientServiceIp());
-                logger.info("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo,
+                logger.debug("Receiving Service: 【{}】, Request Log Report，Logging Content：{}", serviceInfo,
                         loggingAdminFactoryBean.isFormatConsoleLogJson() ? JsonUtils.beautifyJson(notice.getLoggers()) :
                                 JsonUtils.toJsonString(notice.getLoggers()));
             }

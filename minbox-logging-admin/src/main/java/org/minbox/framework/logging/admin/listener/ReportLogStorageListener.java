@@ -48,13 +48,21 @@ public class ReportLogStorageListener implements SmartApplicationListener {
      */
     public static final String BEAN_NAME = "reportLogStorageListener";
     /**
+     * The service name format pattern
+     * <p>
+     * arg0: serviceId
+     * arg1: serviceIp
+     * arg2: servicePort
+     */
+    public static final String SERVICE_NAME_FORMAT_PATTERN = "%s#%s:%d";
+    /**
      * logger instance
      */
     static Logger logger = LoggerFactory.getLogger(ReportLogStorageListener.class);
     /**
-     * ServiceDetails IDS
+     * Cache service names
      */
-    ConcurrentMap<String, String> SERVICE_DETAIL_IDS = new ConcurrentHashMap();
+    ConcurrentMap<String, String> SERVICE_NAMES = new ConcurrentHashMap();
     /**
      * Logging Storage Interface
      * {@link LoggingStorage}
@@ -78,35 +86,42 @@ public class ReportLogStorageListener implements SmartApplicationListener {
             logger.debug("Starting Storage Report Request Logs.");
             ReportLogEvent reportLogEvent = (ReportLogEvent) event;
             LoggingClientNotice notice = reportLogEvent.getLogClientNotice();
-            String serviceDetail = formatServiceDetailID(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
-            String serviceDetailId = SERVICE_DETAIL_IDS.get(serviceDetail);
+            String serviceName = formatServiceName(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
+            synchronized (serviceName.intern()) {
+                String serviceDetailId = SERVICE_NAMES.get(serviceName);
 
-            // new service
-            if (ObjectUtils.isEmpty(serviceDetailId)) {
-                // select service detail id from database
-                serviceDetailId = loggingStorage.selectServiceDetailId(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
-                // if don't have in database
-                // create new service detail
+                // new service
                 if (ObjectUtils.isEmpty(serviceDetailId)) {
-                    serviceDetailId = loggingStorage.insertServiceDetail(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
+                    // select service detail id from database
+                    serviceDetailId = loggingStorage.selectServiceDetailId(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
+                    // if don't have in database
+                    // create new service detail
+                    if (ObjectUtils.isEmpty(serviceDetailId)) {
+                        serviceDetailId = loggingStorage.insertServiceDetail(notice.getClientServiceId(), notice.getClientServiceIp(), notice.getClientServicePort());
+                    }
+                    if (!ObjectUtils.isEmpty(serviceDetailId)) {
+                        SERVICE_NAMES.put(serviceName, serviceDetailId);
+                    }
                 }
-                if (!ObjectUtils.isEmpty(serviceDetailId)) {
-                    SERVICE_DETAIL_IDS.put(serviceDetail, serviceDetailId);
+
+                // save logs
+                if (!ObjectUtils.isEmpty(notice.getLoggers())) {
+                    for (MinBoxLog log : notice.getLoggers()) {
+                        try {
+                            // set service name
+                            log.setServiceName(serviceName);
+                            String requestLogId = loggingStorage.insertLog(serviceDetailId, log);
+                            // save global logs
+                            saveGlobalLogs(requestLogId, log.getGlobalLogs());
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
                 }
+
+                // update last report time
+                loggingStorage.updateLastReportTime(serviceDetailId);
             }
-
-            // save logs
-            if (!ObjectUtils.isEmpty(notice.getLoggers())) {
-                for (MinBoxLog log : notice.getLoggers()) {
-                    String requestLogId = loggingStorage.insertLog(serviceDetailId, log);
-                    // save global logs
-                    saveGlobalLogs(requestLogId, log.getGlobalLogs());
-                }
-            }
-
-            // update last report time
-            loggingStorage.updateLastReportTime(serviceDetailId);
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -134,18 +149,18 @@ public class ReportLogStorageListener implements SmartApplicationListener {
     }
 
     /**
-     * format serviceDetail ID
+     * format service name
      *
-     * @param serviceId   service id
+     * @param serviceId   service id, the application name
      * @param serviceIp   service ip address
      * @param servicePort service port
      * @return
      */
-    String formatServiceDetailID(String serviceId, String serviceIp, Integer servicePort) {
+    String formatServiceName(String serviceId, String serviceIp, Integer servicePort) {
         Assert.notNull(serviceId, "Service Id Is Required.");
         Assert.notNull(serviceIp, "Service Ip Is Required.");
         Assert.notNull(servicePort, "Service Port Is Required.");
-        return String.format("%s-%s:%d", serviceId, serviceIp, servicePort);
+        return String.format(SERVICE_NAME_FORMAT_PATTERN, serviceId, serviceIp, servicePort);
     }
 
     @Override

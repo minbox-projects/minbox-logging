@@ -21,9 +21,9 @@ import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.MinBoxLog;
 import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
-import org.minbox.framework.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -140,12 +140,12 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.setLong(7, log.getEndTime());
         ps.setInt(8, log.getHttpStatus());
         ps.setString(9, log.getRequestBody());
-        ps.setString(10, JsonUtils.toJsonString(log.getRequestHeaders()));
+        ps.setString(10, log.getRequestHeader());
         ps.setString(11, log.getRequestIp());
         ps.setString(12, log.getRequestMethod());
         ps.setString(13, log.getRequestUri());
         ps.setString(14, log.getResponseBody());
-        ps.setString(15, JsonUtils.toJsonString(log.getResponseHeaders()));
+        ps.setString(15, log.getResponseHeader());
         ps.setLong(16, log.getTimeConsuming());
         ps.setString(17, log.getRequestParam());
         ps.setString(18, log.getExceptionStack());
@@ -170,7 +170,7 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             LoggingResponse response = new LoggingResponse();
-            response.setCreateTime(rs.getTimestamp("lrl_create_time"));
+            response.setCreateTime(rs.getTimestamp("lrl_create_time").toLocalDateTime());
             response.setTraceId(rs.getString("lrl_trace_id"));
             response.setHttpStatus(rs.getInt("lrl_http_status"));
             response.setTimeConsuming(rs.getInt("lrl_time_consuming"));
@@ -240,8 +240,9 @@ public class LoggingDataSourceStorage implements LoggingStorage {
             response.setId(rs.getString("lsd_service_id"));
             response.setIp(rs.getString("lsd_service_ip"));
             response.setPort(rs.getInt("lsd_service_port"));
-            response.setLastReportTime(rs.getTimestamp("lsd_last_report_time"));
-            response.setCreateTime(rs.getTimestamp("lsd_create_time"));
+            Timestamp lastReportTime = rs.getTimestamp("lsd_last_report_time");
+            response.setLastReportTime(!ObjectUtils.isEmpty(lastReportTime) ? lastReportTime.toLocalDateTime() : null);
+            response.setCreateTime(rs.getTimestamp("lsd_create_time").toLocalDateTime());
             responses.add(response);
         }
         ps.close();

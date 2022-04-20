@@ -30,31 +30,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
-            <!--<plugin>
-                <groupId>org.minbox.framework</groupId>
-                <artifactId>command-execute-maven-plugin</artifactId>
-                <version>0.2.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>npm build</id>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npm run build</executable>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

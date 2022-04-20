@@ -8,4 +8,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://localhost:3308/test
+
+logging:
+  level:
+    org.minbox.framework.logging.admin: debug

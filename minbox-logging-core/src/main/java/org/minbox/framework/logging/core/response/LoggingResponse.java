@@ -20,8 +20,6 @@ package org.minbox.framework.logging.core.response;
 import lombok.Data;
 import org.minbox.framework.logging.core.MinBoxLog;
 
-import java.sql.Timestamp;
-
 /**
  * Logging Response Api Entity
  *
@@ -29,20 +27,5 @@ import java.sql.Timestamp;
  */
 @Data
 public class LoggingResponse extends MinBoxLog {
-    /**
-     * The request logs create time
-     */
-    private Timestamp createTime;
-    /**
-     * request header
-     */
-    private String requestHeader;
-    /**
-     * response header
-     */
-    private String responseHeader;
-    /**
-     * service Id
-     */
-    private String serviceId;
+    // ...
 }
