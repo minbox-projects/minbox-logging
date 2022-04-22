@@ -64,6 +64,9 @@ public class LoggingAdminNotice implements LoggingNotice {
                 factoryBean.getLoggingCache().cache(minBoxLog);
                 logger.debug("Cache Request Logging Complete.");
                 break;
+            default:
+                logger.warn("Unsupported reporting away.");
+                break;
         }
     }
 

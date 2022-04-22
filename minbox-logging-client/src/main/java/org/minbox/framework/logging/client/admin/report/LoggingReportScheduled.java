@@ -19,8 +19,8 @@ package org.minbox.framework.logging.client.admin.report;
 
 import org.minbox.framework.logging.client.LoggingFactoryBean;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,7 +36,7 @@ public class LoggingReportScheduled {
     /**
      * Scheduled Executor Service
      */
-    private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+    private static final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(10);
 
     /**
      * Scheduled Report
