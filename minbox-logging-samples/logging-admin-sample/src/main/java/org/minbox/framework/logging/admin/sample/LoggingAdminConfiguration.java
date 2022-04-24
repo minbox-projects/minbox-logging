@@ -23,7 +23,7 @@ public class LoggingAdminConfiguration {
      * 当bean容器内存在{@link DataSource}对象实例时创建{@link LoggingAdminFactoryBean}示例
      *
      * @param dataSource {@link DataSource}
-     * @return {@linkLoggingAdminFactoryBean}
+     * @return {@link LoggingAdminFactoryBean}
      */
     @Bean
     public LoggingAdminFactoryBean dataSourceLoggingAdminFactoryBean(DataSource dataSource) {

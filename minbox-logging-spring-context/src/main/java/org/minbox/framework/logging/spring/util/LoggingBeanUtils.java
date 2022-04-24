@@ -1,6 +1,7 @@
 package org.minbox.framework.logging.spring.util;
 
 
+import org.minbox.framework.logging.admin.cleaner.ExpiredDataTimingCleaner;
 import org.minbox.framework.logging.admin.endpoint.LoggingEndpoint;
 import org.minbox.framework.logging.admin.listener.ReportLogJsonFormatListener;
 import org.minbox.framework.logging.admin.listener.ReportLogStorageListener;
@@ -33,6 +34,7 @@ public class LoggingBeanUtils {
         registerReportLogStorageListener(registry);
         registerLoggingEndpoint(registry);
         registerLoggingRequestMappingHandler(registry);
+        registerExpiredDataTimingCleaner(registry);
     }
 
     /**
@@ -106,6 +108,15 @@ public class LoggingBeanUtils {
     public static void registerLoggingRequestMappingHandler(BeanDefinitionRegistry registry) {
         BeanUtils.registerInfrastructureBeanIfAbsent(registry, LoggingRequestMappingHandlerMapping.BEAN_NAME,
                 LoggingRequestMappingHandlerMapping.class);
+    }
+
+    /**
+     * Register Expired data timing cleaner
+     *
+     * @param registry {@link BeanDefinitionRegistry}
+     */
+    public static void registerExpiredDataTimingCleaner(BeanDefinitionRegistry registry) {
+        BeanUtils.registerInfrastructureBeanIfAbsent(registry, ExpiredDataTimingCleaner.BEAN_NAME, ExpiredDataTimingCleaner.class);
     }
 
     /**

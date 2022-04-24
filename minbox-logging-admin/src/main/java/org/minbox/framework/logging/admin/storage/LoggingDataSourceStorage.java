@@ -27,6 +27,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -82,6 +83,14 @@ public class LoggingDataSourceStorage implements LoggingStorage {
     private static final String SQL_INSERT_GLOBAL_LOG = "insert into logging_global_logs (lgl_id, lgl_request_log_id, lgl_level, lgl_content, lgl_caller_class,\n" +
             "                                 lgl_caller_method, lgl_caller_code_line_number, lgl_exception_stack, lgl_create_time) values (?,?,?,?,?,?,?,?,?);";
     /**
+     * Delete expired global logs SQL
+     */
+    private static final String SQL_DELETE_EXPIRED_GLOBAL_LOGS = "delete from logging_global_logs where lgl_create_time < ?;";
+    /**
+     * Delete expired log SQL
+     */
+    private static final String SQL_DELETE_EXPIRED_REQUEST_LOGS = "delete from logging_request_logs where lrl_create_time < ?;";
+    /**
      * The Data Source {@link DataSource}
      * save the logs to database with dataSource
      */
@@ -112,7 +121,7 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.setString(6, log.getCallerMethod());
         ps.setInt(7, log.getCallerCodeLineNumber());
         ps.setString(8, log.getExceptionStack());
-        ps.setLong(9, log.getCreateTime());
+        ps.setTimestamp(9, Timestamp.valueOf(log.getCreateTime()));
         ps.executeUpdate();
         ps.close();
         closeConnection(connection);
@@ -293,6 +302,40 @@ public class LoggingDataSourceStorage implements LoggingStorage {
         ps.executeUpdate();
         ps.close();
         closeConnection(connection);
+    }
+
+    @Override
+    public long cleanupExpiredGlobalLogs(LocalDateTime effectiveDeadlineTime) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_DELETE_EXPIRED_GLOBAL_LOGS);
+        int deletedCount = 0;
+        try {
+            ps.setTimestamp(1, Timestamp.valueOf(effectiveDeadlineTime));
+            deletedCount = ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            ps.close();
+            closeConnection(connection);
+            return deletedCount;
+        }
+    }
+
+    @Override
+    public long cleanupExpiredRequestLogs(LocalDateTime effectiveDeadlineTime) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_DELETE_EXPIRED_REQUEST_LOGS);
+        int deletedCount = 0;
+        try {
+            ps.setTimestamp(1, Timestamp.valueOf(effectiveDeadlineTime));
+            deletedCount = ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            ps.close();
+            closeConnection(connection);
+        }
+        return deletedCount;
     }
 
     /**

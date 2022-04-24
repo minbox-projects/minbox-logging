@@ -28,6 +28,6 @@ import org.minbox.framework.logging.core.MinBoxLog;
  */
 @Data
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-class MinBoxLogMongoEntity extends MinBoxLog {
+class RequestLogMongoEntity extends MinBoxLog {
     private String _id;
 }

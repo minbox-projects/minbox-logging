@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.asList;
 
@@ -56,6 +58,10 @@ public class LoggingAdminFactoryBean
      * setting logging admin ui config
      */
     private AdminUiSetting adminUiSetting;
+    /**
+     * Data Cleaner Configuration Parameters
+     */
+    private CleanerSetting cleanerSetting;
 
     /**
      * init default instance
@@ -64,6 +70,7 @@ public class LoggingAdminFactoryBean
     public LoggingAdminFactoryBean() {
         this.loggingStorage = new LoggingDefaultStorage();
         this.adminUiSetting = new AdminUiSetting();
+        this.cleanerSetting = new CleanerSetting();
     }
 
     public boolean isShowConsoleReportLog() {
@@ -92,6 +99,14 @@ public class LoggingAdminFactoryBean
 
     public AdminUiSetting getAdminUiSetting() {
         return adminUiSetting;
+    }
+
+    public CleanerSetting getCleanerSetting() {
+        return cleanerSetting;
+    }
+
+    public void setCleanerSetting(CleanerSetting cleanerSetting) {
+        this.cleanerSetting = cleanerSetting;
     }
 
     @Override
@@ -168,6 +183,81 @@ public class LoggingAdminFactoryBean
 
         public void setRoutes(List<String> routes) {
             this.routes = routes;
+        }
+    }
+
+    public static class CleanerSetting {
+        /**
+         * Whether to enable outdated data cleaner
+         * <p>
+         * enabled by default
+         */
+        private boolean enableExpiredDataCleaner = true;
+        /**
+         * Data cleaner execution interval
+         */
+        private int cleanerExecuteInterval = 1;
+        /**
+         * Data cleaner execution interval time unit
+         */
+        private TimeUnit cleanerExecuteIntervalUnit = TimeUnit.HOURS;
+        /**
+         * The value of the cleaning time from the last deadline.
+         * When data cleaning is performed, the specific cleaning time will be calculated according to this value and {@link #cleanerTimeUnitSinceLastCleanup}.
+         */
+        private int cleanerTimeSinceLastCleanup = 30;
+        /**
+         * The time unit at which the cleaner needs to delete the data
+         */
+        private TimeUnit cleanerTimeUnitSinceLastCleanup = TimeUnit.DAYS;
+
+
+        public boolean isEnableExpiredDataCleaner() {
+            return enableExpiredDataCleaner;
+        }
+
+        public void setEnableExpiredDataCleaner(boolean enableExpiredDataCleaner) {
+            this.enableExpiredDataCleaner = enableExpiredDataCleaner;
+        }
+
+        public int getCleanerExecuteInterval() {
+            return cleanerExecuteInterval;
+        }
+
+        public void setCleanerExecuteInterval(int cleanerExecuteInterval) {
+            if (cleanerExecuteInterval > 0) {
+                this.cleanerExecuteInterval = cleanerExecuteInterval;
+            }
+        }
+
+        public TimeUnit getCleanerExecuteIntervalUnit() {
+            return cleanerExecuteIntervalUnit;
+        }
+
+        public void setCleanerExecuteIntervalUnit(TimeUnit cleanerExecuteIntervalUnit) {
+            if (!ObjectUtils.isEmpty(cleanerExecuteIntervalUnit)) {
+                this.cleanerExecuteIntervalUnit = cleanerExecuteIntervalUnit;
+            }
+        }
+
+        public int getCleanerTimeSinceLastCleanup() {
+            return cleanerTimeSinceLastCleanup;
+        }
+
+        public void setCleanerTimeSinceLastCleanup(int cleanerTimeSinceLastCleanup) {
+            if(cleanerTimeSinceLastCleanup > 0) {
+                this.cleanerTimeSinceLastCleanup = cleanerTimeSinceLastCleanup;
+            }
+        }
+
+        public TimeUnit getCleanerTimeUnitSinceLastCleanup() {
+            return cleanerTimeUnitSinceLastCleanup;
+        }
+
+        public void setCleanerTimeUnitSinceLastCleanup(TimeUnit cleanerTimeUnitSinceLastCleanup) {
+            if(!ObjectUtils.isEmpty(cleanerTimeUnitSinceLastCleanup)) {
+                this.cleanerTimeUnitSinceLastCleanup = cleanerTimeUnitSinceLastCleanup;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,5 +48,15 @@ public class LoggingDefaultStorage implements LoggingStorage {
     @Override
     public void updateLastReportTime(String serviceDetailId) throws SQLException {
 
+    }
+
+    @Override
+    public long cleanupExpiredGlobalLogs(LocalDateTime effectiveDeadlineTime) throws SQLException {
+        return 0L;
+    }
+
+    @Override
+    public long cleanupExpiredRequestLogs(LocalDateTime effectiveDeadlineTime) throws SQLException {
+        return 0L;
     }
 }

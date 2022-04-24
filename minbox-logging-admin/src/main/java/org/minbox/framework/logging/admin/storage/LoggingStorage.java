@@ -24,6 +24,7 @@ import org.minbox.framework.logging.core.response.LoggingResponse;
 import org.minbox.framework.logging.core.response.ServiceResponse;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -43,6 +44,15 @@ public interface LoggingStorage {
     String insertGlobalLog(String requestLogId, GlobalLog log) throws SQLException;
 
     /**
+     * Clean up expired global logs
+     *
+     * @param effectiveDeadlineTime The effective deadline for cleaning data, the data before this time will be cleaned up
+     * @return deleted count
+     * @throws SQLException SQL Exception
+     */
+    long cleanupExpiredGlobalLogs(LocalDateTime effectiveDeadlineTime) throws SQLException;
+
+    /**
      * Insert ApiBootLogs To DataBase
      *
      * @param serviceDetailId ServiceDetail ID
@@ -51,6 +61,15 @@ public interface LoggingStorage {
      * @throws SQLException Sql Exception
      */
     String insertLog(String serviceDetailId, MinBoxLog log) throws SQLException;
+
+    /**
+     * Clean up expired logs
+     *
+     * @param effectiveDeadlineTime The effective deadline for cleaning data, the data before this time will be cleaned up
+     * @return deleted count
+     * @throws SQLException SQL Exception
+     */
+    long cleanupExpiredRequestLogs(LocalDateTime effectiveDeadlineTime) throws SQLException;
 
     /**
      * Insert ServiceDetail To DataBase

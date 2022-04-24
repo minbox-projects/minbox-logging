@@ -1,8 +1,13 @@
 package org.minbox.framework.logging.core;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Global log data entity
@@ -47,5 +52,10 @@ public class GlobalLog implements Serializable {
      * the global log create time
      * default is current time millis
      */
-    private Long createTime = System.currentTimeMillis();
+    /**
+     * The request logs create time
+     */
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createTime = LocalDateTime.now();
 }

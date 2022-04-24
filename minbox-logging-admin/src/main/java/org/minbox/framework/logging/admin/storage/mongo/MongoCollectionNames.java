@@ -27,9 +27,9 @@ public interface MongoCollectionNames {
      */
     String GLOBAL_LOG = "minbox-global-logs";
     /**
-     * The {@link MinBoxLogMongoEntity} storage collection name
+     * The {@link RequestLogMongoEntity} storage collection name
      */
-    String MINBOX_LOG = "minbox-logs";
+    String REQUEST_LOG = "minbox-request-logs";
     /**
      * The {@link ServiceEntity} storage collection name
      */

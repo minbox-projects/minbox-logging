@@ -31,7 +31,7 @@ CREATE TABLE `logging_global_logs` (
   `lgl_caller_method` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志输出的方法名称',
   `lgl_caller_code_line_number` int(11) DEFAULT NULL COMMENT '日志输出的代码行号',
   `lgl_exception_stack` mediumtext COLLATE utf8mb4_general_ci COMMENT 'error等级的日志异常堆栈信息',
-  `lgl_create_time` mediumtext COLLATE utf8mb4_general_ci COMMENT '日志发生时间',
+  `lgl_create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志发生时间',
   PRIMARY KEY (`lgl_id`),
   KEY `logging_global_logs_logging_request_logs_lrl_id_fk` (`lgl_request_log_id`),
   CONSTRAINT `logging_global_logs_logging_request_logs_lrl_id_fk` FOREIGN KEY (`lgl_request_log_id`) REFERENCES `logging_request_logs` (`lrl_id`)

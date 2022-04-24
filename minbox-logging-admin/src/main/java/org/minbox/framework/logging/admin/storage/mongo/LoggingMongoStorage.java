@@ -16,6 +16,7 @@
 
 package org.minbox.framework.logging.admin.storage.mongo;
 
+import com.mongodb.client.result.DeleteResult;
 import org.minbox.framework.logging.admin.storage.LoggingStorage;
 import org.minbox.framework.logging.core.GlobalLog;
 import org.minbox.framework.logging.core.MinBoxLog;
@@ -57,12 +58,12 @@ public class LoggingMongoStorage implements LoggingStorage {
 
     @Override
     public String insertLog(String serviceDetailId, MinBoxLog log) throws SQLException {
-        MinBoxLogMongoEntity minBoxLogEntity = new MinBoxLogMongoEntity();
+        RequestLogMongoEntity minBoxLogEntity = new RequestLogMongoEntity();
         BeanUtils.copyProperties(log, minBoxLogEntity);
         minBoxLogEntity.setServiceDetailId(serviceDetailId);
         // ignore save global logs
         minBoxLogEntity.setGlobalLogs(null);
-        this.mongoTemplate.insert(minBoxLogEntity, MongoCollectionNames.MINBOX_LOG);
+        this.mongoTemplate.insert(minBoxLogEntity, MongoCollectionNames.REQUEST_LOG);
         return minBoxLogEntity.get_id();
     }
 
@@ -101,9 +102,9 @@ public class LoggingMongoStorage implements LoggingStorage {
 
     @Override
     public List<LoggingResponse> findTopList(int topCount) throws SQLException {
-        Query query = new Query().with(Sort.by(Sort.Direction.DESC, MongoCollectionFields.LOG_START_TIME))
+        Query query = new Query().with(Sort.by(Sort.Direction.DESC, MongoCollectionFields.LOG_CREATE_TIME))
                 .limit(topCount);
-        return this.mongoTemplate.find(query, MinBoxLogMongoEntity.class, MongoCollectionNames.MINBOX_LOG).stream()
+        return this.mongoTemplate.find(query, RequestLogMongoEntity.class, MongoCollectionNames.REQUEST_LOG).stream()
                 .map(entity -> {
                     LoggingResponse response = new LoggingResponse();
                     BeanUtils.copyProperties(entity, response);
@@ -117,5 +118,19 @@ public class LoggingMongoStorage implements LoggingStorage {
         Update update = new Update();
         update.set(MongoCollectionFields.SERVICE_LAST_REPORT_TIME, LocalDateTime.now());
         this.mongoTemplate.upsert(query, update, ServiceEntity.class, MongoCollectionNames.SERVICE);
+    }
+
+    @Override
+    public long cleanupExpiredGlobalLogs(LocalDateTime effectiveDeadlineTime) {
+        Query query = Query.query(Criteria.where(MongoCollectionFields.LOG_CREATE_TIME).lt(effectiveDeadlineTime));
+        DeleteResult result = this.mongoTemplate.remove(query, MongoCollectionNames.GLOBAL_LOG);
+        return result.getDeletedCount();
+    }
+
+    @Override
+    public long cleanupExpiredRequestLogs(LocalDateTime effectiveDeadlineTime) {
+        Query query = Query.query(Criteria.where(MongoCollectionFields.LOG_CREATE_TIME).lt(effectiveDeadlineTime));
+        DeleteResult result = this.mongoTemplate.remove(query, MongoCollectionNames.REQUEST_LOG);
+        return result.getDeletedCount();
     }
 }

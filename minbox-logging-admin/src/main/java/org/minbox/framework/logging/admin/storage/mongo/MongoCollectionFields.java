@@ -28,5 +28,5 @@ public interface MongoCollectionFields {
     String SERVICE_PORT = "servicePort";
     String SERVICE_LAST_REPORT_TIME = "lastReportTime";
 
-    String LOG_START_TIME = "startTime";
+    String LOG_CREATE_TIME = "createTime";
 }
