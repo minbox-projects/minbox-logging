@@ -17,6 +17,8 @@
 
 package org.minbox.framework.logging.client.filter;
 
+import org.minbox.framework.logging.client.LoggingFactoryBean;
+import org.minbox.framework.util.UrlUtils;
 import org.minbox.framework.web.request.RequestWrapper;
 import org.minbox.framework.web.response.ResponseWrapper;
 import org.minbox.framework.web.util.HttpRequestUtil;
@@ -39,6 +41,14 @@ public class LoggingBodyFilter implements Filter {
      * the bean name of {@link LoggingBodyFilter}
      */
     public static final String BEAN_NAME = "loggingBodyFilter";
+    /**
+     * {@link LoggingFactoryBean}
+     */
+    private LoggingFactoryBean factoryBean;
+
+    public LoggingBodyFilter(LoggingFactoryBean factoryBean) {
+        this.factoryBean = factoryBean;
+    }
 
     /**
      * Wrapper Body
@@ -53,9 +63,12 @@ public class LoggingBodyFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        // see https://github.com/minbox-projects/api-boot/issues/85
+        HttpServletRequest servletRequest = (HttpServletRequest) request;
+        String uri = HttpRequestUtil.getUri(servletRequest);
         // see https://gitee.com/minbox-projects/minbox-logging/issues/I1JWSK
-        if (!HttpRequestUtil.isMultipart(request)) {
-            RequestWrapper requestWrapper = new RequestWrapper((HttpServletRequest) request);
+        if (!HttpRequestUtil.isMultipart(request) && !UrlUtils.isIgnore(factoryBean.getIgnorePaths(), uri)) {
+            RequestWrapper requestWrapper = new RequestWrapper(servletRequest);
             ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
             filterChain.doFilter(requestWrapper, responseWrapper);
             responseWrapper.flushBuffer();
