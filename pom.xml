@@ -23,9 +23,9 @@
         <module>minbox-logging-dependencies</module>
     </modules>
     <properties>
-        <revision>2.0.0</revision>
+        <revision>2.0.1-SNAPSHOT</revision>
         <minbox.version>1.0.8</minbox.version>
-        <spring-boot.version>2.6.6</spring-boot.version>
+        <spring-boot.version>2.7.3</spring-boot.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,9 +80,6 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
         <repository>
             <id>aliyun-central</id>
@@ -90,9 +87,13 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+        </repository>
+        <repository>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
     <build>
